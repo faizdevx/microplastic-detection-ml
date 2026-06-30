@@ -4,7 +4,7 @@ A low-cost, portable, AI-assisted system for quantification and polymer classifi
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-DeepLearning-red)
-![YOLOv11](https://img.shields.io/badge/YOLOv11-InstanceSegmentation-green)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-InstanceSegmentation-green)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 
 ---
