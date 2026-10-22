@@ -67,3 +67,13 @@ Leave-one-session-out folds are therefore not emitted (needs ≥ 3 sessions per 
 
 ## Splits
 `data/processed/splits.json`: group-level 15 % hold-out plus 5-fold StratifiedGroupKFold on the rest (seed 42). Traceability: it stores the sha256 of `groups.csv`.
+
+## Annotation provenance (Phase 2)
+- The archive has no annotations. Particle masks are **auto-generated** by the classical
+  segmentation (`mp segment`): 1020 unique images, mean 34 particles per image.
+- Human-corrected masks: **0** (`data/yolo/label_sources.csv`: auto 1020, corrected 0).
+  Auto-vs-corrected mask IoU is therefore not available. Run `mp annotate-export`, correct,
+  then `mp annotate-import` (see `docs/annotation_guide.md`), which writes
+  `results/annotation_quality.json`.
+- Background-only control: the particle-free background of an image predicts the class with
+  0.906 balanced accuracy (`results/phase2_controls.json`).
