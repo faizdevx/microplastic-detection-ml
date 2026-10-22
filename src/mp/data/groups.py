@@ -157,12 +157,16 @@ def _filename_number(name: str) -> int | None:
     return int(m[-1]) if m else None
 
 
-def infer_sessions(df: pd.DataFrame, exif_gap_min: float, filename_gap: int) -> pd.Series:
+def infer_sessions(
+    df: pd.DataFrame, exif_gap_min: float, filename_gap: int | None
+) -> pd.Series:
     """Probable acquisition sessions, per class.
 
     Key = resolution. Within a key, split sorted EXIF timestamps on gaps larger
-    than `exif_gap_min` minutes when every image has one; otherwise split sorted
-    filename numbers on gaps larger than `filename_gap`.
+    than `exif_gap_min` minutes when every image has one. If `filename_gap` is
+    set, otherwise split sorted filename numbers on gaps larger than that. It is
+    off by default: on this dataset it cuts near-duplicate copies into
+    different "sessions".
     """
     session = pd.Series("", index=df.index, dtype=object)
     for (cls, w, h), sub in df.groupby(["class", "width", "height"]):
@@ -175,7 +179,7 @@ def infer_sessions(df: pd.DataFrame, exif_gap_min: float, filename_gap: int) -> 
             part = (gaps > exif_gap_min).cumsum()
         else:
             nums = sub["rel_path"].map(_filename_number)
-            if nums.notna().all() and len(sub) > 1:
+            if filename_gap is not None and nums.notna().all() and len(sub) > 1:
                 order = nums.sort_values()
                 part = (order.diff().fillna(0) > filename_gap).cumsum()
             else:

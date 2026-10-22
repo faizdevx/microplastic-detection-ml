@@ -18,6 +18,7 @@ from sklearn.preprocessing import StandardScaler  # noqa: E402
 from tqdm import tqdm  # noqa: E402
 
 from mp.config import load_config, resolve  # noqa: E402
+from mp.data.groups import _filename_number  # noqa: E402
 
 CHANNEL_COLS = ["mean_R", "mean_G", "mean_B", "std_R", "std_G", "std_B"]
 SIZE_COLS = ["width", "height", "file_size"]
@@ -36,6 +37,23 @@ def compute_image_stats(df: pd.DataFrame, extract_dir) -> pd.DataFrame:
         [df[["rel_path"]].reset_index(drop=True), pd.DataFrame(rows, columns=CHANNEL_COLS)],
         axis=1,
     )
+
+
+def filename_span_pattern(sub: pd.DataFrame) -> dict:
+    """Most common (max - min) filename-number span inside multi-image groups."""
+    spans = []
+    for _, g in sub[sub["group_size"] > 1].groupby("group_id"):
+        nums = [n for n in g["rel_path"].map(_filename_number) if n is not None]
+        if len(nums) > 1:
+            spans.append(max(nums) - min(nums))
+    if not spans:
+        return {}
+    vc = pd.Series(spans).value_counts()
+    return {
+        "n_multi_image_groups": len(spans),
+        "top_spans": {int(k): int(v) for k, v in vc.head(3).items()},
+        "share_with_top_span": round(float(vc.iloc[0] / len(spans)), 3),
+    }
 
 
 def shortcut_baseline(
@@ -148,6 +166,7 @@ def run(cfg: dict | None = None) -> dict:
                                 sub["file_size"].describe()[["mean", "std", "min", "max"]].items()},
             "channel_mean_of_means": {k: round(float(sub[k].mean()), 3) for k in CHANNEL_COLS[:3]},
             "channel_mean_of_stds": {k: round(float(sub[k].mean()), 3) for k in CHANNEL_COLS[3:]},
+            "filename_span_in_groups": filename_span_pattern(sub),
             "n_sessions": int(sub["session_id"].nunique()),
             "sessions": {k: int(v) for k, v in sub["session_id"].value_counts().items()},
         }

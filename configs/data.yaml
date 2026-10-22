@@ -23,7 +23,10 @@ groups:
 
 sessions:
   exif_gap_minutes: 60       # new session if EXIF timestamps jump by more than this
-  filename_gap: 25           # new session if sorted filename numbers jump by more than this
+  # null = sessions are (class, resolution) only. A numeric gap splits sorted filename
+  # numbers into extra sessions, but on RAW_DATASET that separates near-duplicate copies
+  # (every group then spans several "sessions"), so it is disabled.
+  filename_gap: null
 
 splits:
   seed: 42

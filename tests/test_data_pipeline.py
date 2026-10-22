@@ -172,6 +172,19 @@ def test_infer_sessions_by_filename_gap():
     assert s.nunique() == 2
 
 
+def test_infer_sessions_filename_gap_disabled_by_default_none():
+    df = pd.DataFrame(
+        {
+            "class": ["PVC"] * 4,
+            "width": [640] * 4,
+            "height": [480] * 4,
+            "rel_path": [f"PVC/pvc_{n:04d}.jpg" for n in (1, 2, 300, 301)],
+            "exif_datetime": [""] * 4,
+        }
+    )
+    assert groups.infer_sessions(df, 60, None).nunique() == 1
+
+
 def test_calibrate_recovers_known_spacing(tmp_path):
     period_px = 12.5
     x = np.arange(400)
