@@ -30,3 +30,8 @@ def load_config(path: str | Path | None = None) -> dict:
 
 def resolve(cfg_path: str, root: Path | None = None) -> Path:
     return (root or repo_root()) / cfg_path
+
+
+def load_named(name: str) -> dict:
+    """Load configs/<name>.yaml (e.g. 'classifier', 'yolo_seg')."""
+    return load_config(repo_root() / "configs" / f"{name}.yaml")

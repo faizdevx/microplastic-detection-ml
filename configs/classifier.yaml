@@ -1,0 +1,54 @@
+# Phase 2 baseline A (per-particle classical classifier) and confound controls.
+seed: 42
+
+# "resample": every image is letterboxed to 640x480 (assumes resolutions are resampled
+#             views of the same field, i.e. one physical pixel size after resizing).
+# "native":   no resizing (assumes equal sensor pixel pitch at every resolution).
+# um_per_px is unknown, so both are reported.
+geometries: [resample, native]
+main_geometry: resample
+
+preprocess:
+  target_size: [640, 480]       # width, height for "resample"
+  bg_open_kernel: 25            # opening kernel on the 1/4-scale image (~100 px at 640 wide)
+  bg_downscale: 4
+  pct_lo: 1
+  pct_hi: 99
+
+segmentation:
+  channel: 0                    # red = Nile Red emission
+  blur_sigma: 1.0
+  threshold: otsu               # otsu | adaptive | both
+  min_signal: 8                 # absolute floor on the background-corrected 0-255 signal
+  adaptive_block: 51
+  adaptive_c: 4
+  open_kernel: 3
+  watershed_min_distance: 5
+  min_area_px: 20
+  drop_border: true
+  mask_dilate: 3                # px; dilation for background-only masking
+
+feature_groups: [shape, ratio, intensity_norm, intensity_raw]
+
+models:
+  logreg:
+    grid: {C: [0.1, 1.0, 10.0]}
+  random_forest:
+    fixed: {n_estimators: 200, n_jobs: -1}
+    grid: {max_depth: [8, null], min_samples_leaf: [1, 5]}
+  hist_gb:
+    grid: {learning_rate: [0.05, 0.1], max_leaf_nodes: [15, 31]}
+    fixed: {max_iter: 100}
+inner_folds: 3
+
+controls:
+  permutations: 100
+  permutation_model_iter: 60    # HistGB max_iter inside the permutation test
+  resolution_matched: ["640x480", "1280x960"]
+  background_only_model: random_forest
+  chance_margin: 0.10           # background-only "near chance" if balanced acc <= 0.5 + margin
+  shortcut_margin: 0.0          # must beat shortcut baseline by more than this
+
+holdout:
+  bootstrap: 1000
+  failure_gallery: 12
