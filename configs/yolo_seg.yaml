@@ -1,0 +1,33 @@
+# YOLOv11 instance segmentation. Folds come from data/processed/splits.json (never
+# Ultralytics' own split). Hue jitter is kept tiny because hue carries the polymer
+# (Nile Red emission colour) signal.
+seed: 42
+model: yolo11s-seg.pt
+imgsz: 640
+epochs: 150
+patience: 30
+optimizer: AdamW
+lr0: 0.001
+deterministic: true
+batch: 16
+workers: 4
+
+augment:
+  hsv_h: 0.01
+  hsv_s: 0.3
+  hsv_v: 0.3
+  degrees: 180
+  scale: 0.2          # 0.8-1.2
+  fliplr: 0.5
+  flipud: 0.5
+  mosaic: 1.0
+  close_mosaic: 10    # mosaic off for the last 10 epochs
+
+classes: [pvc, nylon]
+
+smoke:
+  model: yolo11s-seg.yaml   # architecture only: no weights download for the smoke test
+  epochs: 2
+  imgsz: 320
+  n_images: 20
+  batch: 4

@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-22T16:28:35+00:00",
+    "git_commit": "00cd56b2e26e30a6f7bb028e425ffb4dd68d8a86",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "data": "smoke",
+  "weights": "yolo11s-seg.yaml",
+  "epochs": 2,
+  "labels": {
+    "corrected": 0,
+    "auto": 1020,
+    "description": "trained on auto-generated masks (uncorrected)"
+  },
+  "seg": {
+    "map50": 0.0,
+    "map50_95": 0.0
+  },
+  "box": {
+    "map50": 0.0,
+    "map50_95": 0.0
+  },
+  "per_class_seg": {
+    "pvc": {
+      "precision": 0.0,
+      "recall": 0.0
+    },
+    "nylon": {
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  "image_level": null,
+  "n_val_images": 10,
+  "n_val_no_prediction": 10,
+  "counting_error": null,
+  "counting_error_note": "needs human-corrected masks; none imported"
+}

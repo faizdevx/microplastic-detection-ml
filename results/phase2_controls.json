@@ -1,0 +1,322 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-22T16:39:26+00:00",
+    "git_commit": "00cd56b2e26e30a6f7bb028e425ffb4dd68d8a86",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "selected": {
+    "geometry": "resample",
+    "model": "hist_gb",
+    "params": {
+      "max_iter": 100,
+      "learning_rate": 0.1,
+      "max_leaf_nodes": 31
+    },
+    "rule": "highest pooled image-level CV accuracy on the main geometry; hyper-parameters = most frequent inner-CV choice over the outer folds"
+  },
+  "geometries": {
+    "resample": {
+      "geometry": "resample",
+      "model": "hist_gb",
+      "params": {
+        "max_iter": 100,
+        "learning_rate": 0.1,
+        "max_leaf_nodes": 31
+      },
+      "shortcut_cv_all_folds": {
+        "size_only": {
+          "accuracy": 0.8670520231213873,
+          "balanced_accuracy": 0.8663956959687291,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "size_and_intensity": {
+          "accuracy": 0.9583815028901734,
+          "balanced_accuracy": 0.9580469706406649,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        }
+      },
+      "resolution_matched": {
+        "resolutions": [
+          "1280x960",
+          "640x480"
+        ],
+        "model": {
+          "accuracy": 0.979047619047619,
+          "balanced_accuracy": 0.957440062188037,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        },
+        "shortcut_size_and_intensity": {
+          "accuracy": 0.9523809523809523,
+          "balanced_accuracy": 0.9140618607315276,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        },
+        "shortcut_size_only": {
+          "accuracy": 0.780952380952381,
+          "balanced_accuracy": 0.6926806316995335,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        }
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "train": "640x480",
+          "test": "1280x960",
+          "model": {
+            "accuracy": 0.863905325443787,
+            "balanced_accuracy": 0.8637254901960785,
+            "n": 169,
+            "n_pvc": 84,
+            "n_nylon": 85
+          },
+          "shortcut_size_and_intensity": {
+            "accuracy": 0.5088757396449705,
+            "balanced_accuracy": 0.5061624649859944,
+            "n": 169,
+            "n_pvc": 84,
+            "n_nylon": 85
+          }
+        },
+        "b_to_a": {
+          "train": "1280x960",
+          "test": "640x480",
+          "model": {
+            "accuracy": 0.8820224719101124,
+            "balanced_accuracy": 0.7618055555555556,
+            "n": 356,
+            "n_pvc": 320,
+            "n_nylon": 36
+          },
+          "shortcut_size_and_intensity": {
+            "accuracy": 0.9101123595505618,
+            "balanced_accuracy": 0.6788194444444444,
+            "n": 356,
+            "n_pvc": 320,
+            "n_nylon": 36
+          }
+        }
+      },
+      "background_only": {
+        "accuracy": 0.9075144508670521,
+        "balanced_accuracy": 0.9058869010545306,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "feature_group_ablation": {
+        "shape": {
+          "accuracy": 0.8682080924855491,
+          "balanced_accuracy": 0.8722240716479457,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "ratio": {
+          "accuracy": 0.8624277456647399,
+          "balanced_accuracy": 0.862057301174803,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "intensity_norm": {
+          "accuracy": 0.9526011560693641,
+          "balanced_accuracy": 0.9526239771482571,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "intensity_raw": {
+          "accuracy": 0.9826589595375722,
+          "balanced_accuracy": 0.9823537939477245,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "all": {
+          "accuracy": 0.9780346820809248,
+          "balanced_accuracy": 0.9783214492815876,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        }
+      },
+      "permutation": {
+        "model": "hist_gb (fixed, max_iter=60)",
+        "observed_accuracy": 0.976878612716763,
+        "null_mean": 0.499329479768786,
+        "null_std": 0.033181680033908756,
+        "null_max": 0.5745664739884393,
+        "n_permutations": 100,
+        "p_value": 0.009900990099009901
+      },
+      "verdict": {
+        "beats_shortcut_resolution_matched": true,
+        "beats_shortcut_cross_resolution": true,
+        "background_only_near_chance": false,
+        "passes": false
+      }
+    },
+    "native": {
+      "geometry": "native",
+      "model": "hist_gb",
+      "params": {
+        "max_iter": 100,
+        "learning_rate": 0.1,
+        "max_leaf_nodes": 31
+      },
+      "shortcut_cv_all_folds": {
+        "size_only": {
+          "accuracy": 0.8670520231213873,
+          "balanced_accuracy": 0.8663956959687291,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "size_and_intensity": {
+          "accuracy": 0.9583815028901734,
+          "balanced_accuracy": 0.9580469706406649,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        }
+      },
+      "resolution_matched": {
+        "resolutions": [
+          "1280x960",
+          "640x480"
+        ],
+        "model": {
+          "accuracy": 0.9714285714285714,
+          "balanced_accuracy": 0.9467003518533672,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        },
+        "shortcut_size_and_intensity": {
+          "accuracy": 0.9523809523809523,
+          "balanced_accuracy": 0.9140618607315276,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        },
+        "shortcut_size_only": {
+          "accuracy": 0.780952380952381,
+          "balanced_accuracy": 0.6926806316995335,
+          "n": 525,
+          "n_pvc": 404,
+          "n_nylon": 121
+        }
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "train": "640x480",
+          "test": "1280x960",
+          "model": {
+            "accuracy": 0.6153846153846154,
+            "balanced_accuracy": 0.6133753501400561,
+            "n": 169,
+            "n_pvc": 84,
+            "n_nylon": 85
+          },
+          "shortcut_size_and_intensity": {
+            "accuracy": 0.5088757396449705,
+            "balanced_accuracy": 0.5061624649859944,
+            "n": 169,
+            "n_pvc": 84,
+            "n_nylon": 85
+          }
+        },
+        "b_to_a": {
+          "train": "1280x960",
+          "test": "640x480",
+          "model": {
+            "accuracy": 0.7696629213483146,
+            "balanced_accuracy": 0.65,
+            "n": 356,
+            "n_pvc": 320,
+            "n_nylon": 36
+          },
+          "shortcut_size_and_intensity": {
+            "accuracy": 0.9101123595505618,
+            "balanced_accuracy": 0.6788194444444444,
+            "n": 356,
+            "n_pvc": 320,
+            "n_nylon": 36
+          }
+        }
+      },
+      "background_only": {
+        "accuracy": 0.9086705202312139,
+        "balanced_accuracy": 0.9072775498808016,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "feature_group_ablation": {
+        "shape": {
+          "accuracy": 0.7317919075144509,
+          "balanced_accuracy": 0.7352129464573356,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "ratio": {
+          "accuracy": 0.8705202312138728,
+          "balanced_accuracy": 0.8693434419363846,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "intensity_norm": {
+          "accuracy": 0.930635838150289,
+          "balanced_accuracy": 0.9300272760464767,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "intensity_raw": {
+          "accuracy": 0.976878612716763,
+          "balanced_accuracy": 0.9773898756470007,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        },
+        "all": {
+          "accuracy": 0.9526011560693641,
+          "balanced_accuracy": 0.9538481776594145,
+          "n": 865,
+          "n_pvc": 404,
+          "n_nylon": 461
+        }
+      },
+      "permutation": {
+        "model": "hist_gb (fixed, max_iter=60)",
+        "observed_accuracy": 0.9514450867052023,
+        "null_mean": 0.49621965317919076,
+        "null_std": 0.03296150416964001,
+        "null_max": 0.5641618497109827,
+        "n_permutations": 100,
+        "p_value": 0.009900990099009901
+      },
+      "verdict": {
+        "beats_shortcut_resolution_matched": true,
+        "beats_shortcut_cross_resolution": false,
+        "background_only_near_chance": false,
+        "passes": false
+      }
+    }
+  }
+}

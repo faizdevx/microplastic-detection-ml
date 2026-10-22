@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-22T17:05:31+00:00",
+    "git_commit": "00cd56b2e26e30a6f7bb028e425ffb4dd68d8a86",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "model": {
+    "geometry": "resample",
+    "model": "hist_gb",
+    "params": {
+      "max_iter": 100,
+      "learning_rate": 0.1,
+      "max_leaf_nodes": 31
+    },
+    "rule": "highest pooled image-level CV accuracy on the main geometry; hyper-parameters = most frequent inner-CV choice over the outer folds"
+  },
+  "n_holdout_images": 155,
+  "n_without_particles": 0,
+  "metrics": {
+    "n": 155,
+    "accuracy": 0.9870967741935484,
+    "balanced_accuracy": 0.9876543209876543,
+    "macro_f1": 0.9870833333333333,
+    "per_class": {
+      "PVC": {
+        "precision": 0.9736842105263158,
+        "recall": 1.0,
+        "f1": 0.9866666666666667
+      },
+      "NYLON": {
+        "precision": 1.0,
+        "recall": 0.9753086419753086,
+        "f1": 0.9875
+      }
+    },
+    "confusion_matrix": [
+      [
+        74,
+        0
+      ],
+      [
+        2,
+        79
+      ]
+    ],
+    "ece": 0.1248270310217568,
+    "roc_auc": 0.9993326659993326
+  },
+  "ci95_group_bootstrap": {
+    "accuracy": [
+      0.9515002788622421,
+      1.0
+    ],
+    "balanced_accuracy": [
+      0.9577389871141745,
+      1.0
+    ],
+    "macro_f1": [
+      0.9505529444730735,
+      1.0
+    ],
+    "roc_auc": [
+      0.9959408022468678,
+      1.0
+    ]
+  },
+  "n_bootstrap": 1000,
+  "failure_gallery": [
+    "01_nylon_0394.png",
+    "02_nylon_0395.png"
+  ],
+  "mcnemar_vs_yolo": "YOLO hold-out predictions not available"
+}

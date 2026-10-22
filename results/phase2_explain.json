@@ -1,0 +1,183 @@
+{
+  "model": "hist_gb",
+  "geometry": "resample",
+  "fit_on": "CV folds 1-4",
+  "evaluated_on": "CV fold 0 particles (subsample)",
+  "permutation_importance": [
+    {
+      "feature": "raw_std_G",
+      "importance": 0.05055,
+      "std": 0.00409,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "raw_mean_G",
+      "importance": 0.02605,
+      "std": 0.00176,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "frac_G",
+      "importance": 0.02075,
+      "std": 0.00176,
+      "group": "ratio",
+      "meaning": "share of green in the particle (emission colour)"
+    },
+    {
+      "feature": "raw_max_B",
+      "importance": 0.01595,
+      "std": 0.00314,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "norm_std_B",
+      "importance": 0.0153,
+      "std": 0.00113,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "norm_std_G",
+      "importance": 0.0149,
+      "std": 0.00115,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "area_px",
+      "importance": 0.01445,
+      "std": 0.0004,
+      "group": "shape",
+      "meaning": "particle size (px); depends on pixel pitch, not only on polymer"
+    },
+    {
+      "feature": "raw_std_R",
+      "importance": 0.01295,
+      "std": 0.00296,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "solidity",
+      "importance": 0.01215,
+      "std": 0.00179,
+      "group": "shape",
+      "meaning": "how filled-in the outline is (clumps/irregular edges lower it)"
+    },
+    {
+      "feature": "contrast_ratio_R",
+      "importance": 0.011,
+      "std": 0.00279,
+      "group": "intensity_raw",
+      "meaning": "particle/surround brightness ratio"
+    },
+    {
+      "feature": "raw_mean_R",
+      "importance": 0.01045,
+      "std": 0.00215,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "raw_std_B",
+      "importance": 0.0084,
+      "std": 0.00204,
+      "group": "intensity_raw",
+      "meaning": "background-corrected channel intensity (depends on exposure/brightness)"
+    },
+    {
+      "feature": "minor_axis_px",
+      "importance": 0.00775,
+      "std": 0.00176,
+      "group": "shape",
+      "meaning": ""
+    },
+    {
+      "feature": "norm_std_R",
+      "importance": 0.0058,
+      "std": 0.00248,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "norm_mean_G",
+      "importance": 0.00555,
+      "std": 0.00198,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "norm_mean_B",
+      "importance": 0.00555,
+      "std": 0.00087,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "major_axis_px",
+      "importance": 0.005,
+      "std": 0.00094,
+      "group": "shape",
+      "meaning": ""
+    },
+    {
+      "feature": "convexity",
+      "importance": 0.004,
+      "std": 0.00139,
+      "group": "shape",
+      "meaning": "smoothness of the outline"
+    },
+    {
+      "feature": "norm_mean_R",
+      "importance": 0.0035,
+      "std": 0.00045,
+      "group": "intensity_norm",
+      "meaning": "per-image-normalised channel intensity inside the particle"
+    },
+    {
+      "feature": "frac_B",
+      "importance": 0.0014,
+      "std": 0.00064,
+      "group": "ratio",
+      "meaning": ""
+    }
+  ],
+  "importance_by_group": {
+    "intensity_norm": 0.0513,
+    "intensity_raw": 0.1341,
+    "ratio": 0.01935,
+    "shape": 0.0337
+  },
+  "cohens_d_top_features": {
+    "raw_std_G": -0.2581620448086084,
+    "raw_mean_G": 0.7716810170578964,
+    "frac_G": 1.3959461523605532,
+    "raw_max_B": -0.46425127534087895,
+    "norm_std_B": -0.8281156568834475,
+    "norm_std_G": -0.7460694248319736,
+    "area_px": 0.49345418737102237,
+    "raw_std_R": -0.8121368331725726,
+    "solidity": -0.12025088629986444,
+    "contrast_ratio_R": -1.2722672787568967,
+    "raw_mean_R": -0.5908676222203708,
+    "raw_std_B": -0.4508063554214703
+  },
+  "shap_note": "TreeExplainer on 1000 held-out particles",
+  "shap_mean_abs_top": {
+    "frac_G": 0.67581,
+    "contrast_ratio_R": 0.63406,
+    "raw_mean_G": 0.54738,
+    "raw_std_G": 0.52255,
+    "norm_std_G": 0.43407,
+    "raw_max_B": 0.33918,
+    "area_px": 0.33144,
+    "major_axis_px": 0.27157,
+    "solidity": 0.27103,
+    "raw_std_B": 0.22739,
+    "norm_std_B": 0.22207,
+    "minor_axis_px": 0.218
+  }
+}
