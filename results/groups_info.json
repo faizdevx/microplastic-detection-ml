@@ -1,0 +1,55 @@
+{
+  "threshold": 6,
+  "sensitivity": [
+    {
+      "threshold": 0,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 319,
+      "files_NYLON": 1084,
+      "groups_PVC": 287,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 2,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 316,
+      "files_NYLON": 1084,
+      "groups_PVC": 286,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 4,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 316,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 6,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 315,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 8,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 312,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 10,
+      "cross_class_pairs": 8,
+      "groups_NYLON": 306,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    }
+  ],
+  "cross_class_pairs": [],
+  "n_exact_duplicate_pairs": 1020
+}

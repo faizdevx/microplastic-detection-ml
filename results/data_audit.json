@@ -1,0 +1,211 @@
+{
+  "hash_threshold": 6,
+  "n_images": 2040,
+  "per_class": {
+    "NYLON": {
+      "total_files": 1084,
+      "exact_duplicate_files": 542,
+      "unique_groups": 315,
+      "singleton_groups": 0,
+      "group_size": {
+        "mean": 3.44,
+        "median": 4.0,
+        "max": 12
+      },
+      "resolutions": {
+        "742x556": 424,
+        "1280x960": 200,
+        "780x585": 128,
+        "640x480": 96,
+        "704x528": 96,
+        "755x566": 80,
+        "601x451": 36,
+        "659x494": 24
+      },
+      "file_size_bytes": {
+        "mean": 296273.6,
+        "std": 139760.2,
+        "min": 140859.0,
+        "max": 670061.0
+      },
+      "channel_mean_of_means": {
+        "mean_R": 37.708,
+        "mean_G": 8.374,
+        "mean_B": 0.903
+      },
+      "channel_mean_of_stds": {
+        "std_R": 34.861,
+        "std_G": 13.256,
+        "std_B": 2.803
+      },
+      "filename_span_in_groups": {
+        "n_multi_image_groups": 315,
+        "top_spans": {
+          "543": 117,
+          "542": 83,
+          "532": 43
+        },
+        "share_with_top_span": 0.371
+      },
+      "n_sessions": 8,
+      "sessions": {
+        "NYLON_742x556_s0": 424,
+        "NYLON_1280x960_s0": 200,
+        "NYLON_780x585_s0": 128,
+        "NYLON_640x480_s0": 96,
+        "NYLON_704x528_s0": 96,
+        "NYLON_755x566_s0": 80,
+        "NYLON_601x451_s0": 36,
+        "NYLON_659x494_s0": 24
+      }
+    },
+    "PVC": {
+      "total_files": 956,
+      "exact_duplicate_files": 478,
+      "unique_groups": 285,
+      "singleton_groups": 0,
+      "group_size": {
+        "mean": 3.35,
+        "median": 4.0,
+        "max": 8
+      },
+      "resolutions": {
+        "640x480": 764,
+        "1280x960": 192
+      },
+      "file_size_bytes": {
+        "mean": 239767.8,
+        "std": 175996.6,
+        "min": 117484.0,
+        "max": 663020.0
+      },
+      "channel_mean_of_means": {
+        "mean_R": 23.236,
+        "mean_G": 4.336,
+        "mean_B": 0.636
+      },
+      "channel_mean_of_stds": {
+        "std_R": 23.459,
+        "std_G": 7.146,
+        "std_B": 2.097
+      },
+      "filename_span_in_groups": {
+        "n_multi_image_groups": 285,
+        "top_spans": {
+          "326": 110,
+          "325": 96,
+          "154": 76
+        },
+        "share_with_top_span": 0.386
+      },
+      "n_sessions": 2,
+      "sessions": {
+        "PVC_640x480_s0": 764,
+        "PVC_1280x960_s0": 192
+      }
+    }
+  },
+  "threshold_sensitivity": [
+    {
+      "threshold": 0,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 319,
+      "files_NYLON": 1084,
+      "groups_PVC": 287,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 2,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 316,
+      "files_NYLON": 1084,
+      "groups_PVC": 286,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 4,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 316,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 6,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 315,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 8,
+      "cross_class_pairs": 0,
+      "groups_NYLON": 312,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    },
+    {
+      "threshold": 10,
+      "cross_class_pairs": 8,
+      "groups_NYLON": 306,
+      "files_NYLON": 1084,
+      "groups_PVC": 285,
+      "files_PVC": 956
+    }
+  ],
+  "cross_class_duplicate_pairs": [],
+  "shortcut_baseline": {
+    "size_only": {
+      "logreg": {
+        "fold_accuracy": [
+          0.8088,
+          0.7745,
+          0.701,
+          0.7157,
+          0.7647
+        ],
+        "mean": 0.7529,
+        "std": 0.0395
+      },
+      "random_forest": {
+        "fold_accuracy": [
+          0.9167,
+          0.8824,
+          0.8824,
+          0.8578,
+          0.8775
+        ],
+        "mean": 0.8833,
+        "std": 0.019
+      }
+    },
+    "size_and_intensity": {
+      "logreg": {
+        "fold_accuracy": [
+          0.9216,
+          0.8529,
+          0.9167,
+          0.8529,
+          0.9314
+        ],
+        "mean": 0.8951,
+        "std": 0.0347
+      },
+      "random_forest": {
+        "fold_accuracy": [
+          0.9902,
+          0.9706,
+          0.9706,
+          0.9706,
+          0.951
+        ],
+        "mean": 0.9706,
+        "std": 0.0124
+      }
+    }
+  },
+  "acquisition_confound": true,
+  "acquisition_confound_note": "Metadata/intensity-only classifiers reach 0.971 group-aware CV accuracy (threshold 0.7): class is predictable without looking at particles."
+}

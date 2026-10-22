@@ -1,0 +1,45 @@
+# Data pipeline configuration. Paths are relative to the repository root.
+zenodo:
+  record: 21073653
+  url: https://zenodo.org/api/records/21073653/files/RAW_DATASET.zip/content
+  filename: RAW_DATASET.zip
+  md5: 5c5914a238f1fe40babb7d7a5bd1b983
+
+paths:
+  raw_dir: data/raw
+  extract_dir: data/raw/RAW_DATASET
+  manifest: data/raw/manifest.csv
+  groups: data/processed/groups.csv
+  image_stats: data/processed/image_stats.csv
+  splits: data/processed/splits.json
+  results: results
+
+classes: [PVC, NYLON]
+
+groups:
+  hash_size: 8
+  hash_threshold: 6          # max pHash Hamming distance for near-duplicates
+  sensitivity_thresholds: [0, 2, 4, 6, 8, 10]
+
+sessions:
+  exif_gap_minutes: 60       # new session if EXIF timestamps jump by more than this
+  # null = sessions are (class, resolution) only. A numeric gap splits sorted filename
+  # numbers into extra sessions, but on RAW_DATASET that separates near-duplicate copies
+  # (every group then spans several "sessions"), so it is disabled.
+  filename_gap: null
+
+splits:
+  seed: 42
+  holdout_fraction: 0.15
+  n_folds: 5
+  split_version: "1"
+
+shortcut_baseline:
+  n_folds: 5
+  confound_threshold: 0.70
+
+seed: 42
+
+# Pixel size of the 10x objective + Pi Global Shutter camera. Stays null until
+# measured with `mp calibrate`; downstream code must warn and never guess.
+um_per_px: null

@@ -1,0 +1,13 @@
+{
+  "n_images": 2040,
+  "n_unreadable": 0,
+  "unreadable": [],
+  "n_unclassified_images": 0,
+  "n_images_with_exif_datetime": 0,
+  "folders": [
+    "NYLON",
+    "PVC"
+  ],
+  "non_image_extensions": {},
+  "label_like_files": []
+}

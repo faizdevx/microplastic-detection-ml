@@ -1,0 +1,11 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# data is fetched by `mp fetch`; only split/group tables are tracked
+data/*
+!data/processed/
+data/processed/*
+!data/processed/splits.json
+!data/processed/groups.csv
