@@ -205,6 +205,14 @@ The archive holds **2040 image files** but only
 **600 near-duplicate groups** (an upper bound on independent images). Treat file counts as augmented/duplicated copies, not
 independent samples. All splits (`data/processed/splits.json`) are made at group level.
 
+Example images (one representative per near-duplicate group) and the group-size distribution:
+
+| PVC | NYLON |
+|---|---|
+| ![PVC montage](results/figures/montage_PVC.png) | ![NYLON montage](results/figures/montage_NYLON.png) |
+
+![Group sizes](results/figures/group_size_hist.png)
+
 Reproduce:
 
 ```bash
@@ -274,6 +282,14 @@ Confusion matrix (rows true PVC/NYLON): [[74, 0], [2, 79]]; ECE 0.125; 155 image
   vs 0.506
   balanced accuracy), so part of the signal is genuinely in the particles.
 - YOLOv11-seg is not evaluated; no mAP is claimed.
+
+**Figures** (generated):
+
+| Feature importance | Class differences (Cohen's d) | Hold-out reliability |
+|---|---|---|
+| ![importance](results/figures/feature_importance.png) | ![effects](results/figures/feature_effects.png) | ![reliability](results/figures/phase2_reliability.png) |
+
+Hold-out errors with the auto-segmentation overlaid: `results/figures/phase2_failures/`.
 
 Details and limits are in `MODEL_CARD.md`.
 
