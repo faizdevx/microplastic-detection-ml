@@ -88,3 +88,15 @@ Leave-one-session-out folds are therefore not emitted (needs ≥ 3 sessions per 
   replicate, geometry id, detector angles, optical power, voltage, ADC counts, optical depth,
   saturation flag. The exact config is stored beside it as `scattering_v1.config.yaml`.
 - Measured scattering data: none in this repository.
+
+## Acquisition probes (Phase 5)
+
+Can exposure (brightness tertile) and resolution be read from per-particle features alone? Group-aware cross-validation, cross-validation images only (`results/phase5_probe.json`).
+
+| Features | Exposure, overall | Exposure, within class | Resolution |
+|---|---|---|---|
+| baseline | 0.850 (chance 0.334) | 0.754 (chance 0.335) | 0.854 (chance 0.425) |
+| V1_local_normalisation | 0.731 (chance 0.334) | 0.663 (chance 0.335) | 0.903 (chance 0.425) |
+| V3_patch_cnn | 0.601 (chance 0.334) | 0.490 (chance 0.335) | 0.685 (chance 0.425) |
+
+Brightness and resolution are readable from the particle features, also within a single class. Image brightness is therefore an acquisition cue present in the particle pixels themselves.

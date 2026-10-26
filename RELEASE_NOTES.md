@@ -19,6 +19,8 @@ Monte Carlo, photodiode and ADC chain), a regression pipeline with split-conform
 and analyses of linearity, geometry sensitivity and detection limits. Best model in the
 cross-validated comparison: lasso (R² 0.81).
 
+**Robustness of polymer identification.** Three variants were compared with the baseline on the same controls, using the cross-validation images only: local normalisation, exposure randomisation and a patch network. None improves on both the cross-resolution and the background-disc control (`results/phase5_summary.md`); the baseline stays the default. Shape features alone reach CV accuracy 0.864 with background discs at chance. YOLOv11 training was not run: a CUDA-enabled PyTorch build and a GPU are required; none is usable here.
+
 **Tooling.** `mp analyse` for an image and/or four detector counts (JSON schema in
 `docs/analyse.schema.json`), ONNX export, a benchmark script, a Gradio demo, hardware notes,
 continuous integration, a Dockerfile and a claims-audit script.

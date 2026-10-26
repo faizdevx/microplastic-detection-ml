@@ -30,8 +30,8 @@ The system aims to detect and quantify microplastic particles ranging from **10�
 | Part | State | Evidence |
 |---|---|---|
 | Image dataset audit | Done | 2040 files are 600 near-duplicate groups; every split is made by group (`DATASET_CARD.md`) |
-| Polymer identification (per-particle classifier) | Done, with a caveat | CV accuracy 0.976, hold-out 0.987 (95 % CI 0.952 to 1.000). A model that sees only the particle-free background still reaches 0.906 balanced accuracy, so part of the signal is acquisition, not polymer (`MODEL_CARD.md`) |
-| YOLOv11 instance segmentation | Pipeline only | Implemented, smoke-tested and exported to ONNX with untrained weights; no trained model, no mAP. Masks are automatic and uncorrected |
+| Polymer identification (per-particle classifier) | Done, with a caveat | CV accuracy 0.976, hold-out 0.987 (95 % CI 0.952 to 1.000). A model that sees only the particle-free background still reaches 0.906 balanced accuracy, so part of the signal is acquisition, not polymer (`MODEL_CARD.md`) Phase 5: shape features alone reach CV accuracy 0.864 with background discs at chance (0.516); every pixel-based feature set also separates the classes on background discs (0.709 to 0.938), and none of the three tested variants improves on both controls |
+| YOLOv11 instance segmentation | Pipeline only | Implemented, smoke-tested and exported to ONNX with untrained weights; no trained model, no mAP. Masks are automatic and uncorrected. `results/phase5_yolo_status.json`: a GPU is detected but PyTorch is the CPU build, so training was not run |
 | Concentration estimation | Rig model only | No measured scattering data exist. The results come from a simulator of the rig (see below); best model lasso, R² 0.81 |
 | Hardware | Not built or measured as described | Detector angles, distances, amplifier gain, laser power and ADC are placeholders (`docs/hardware/`) |
 | Pixel size (µm per pixel) | Not calibrated | Sizes are reported in pixels |
