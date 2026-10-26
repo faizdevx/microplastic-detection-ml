@@ -210,7 +210,8 @@ def import_corrected(coco_path: str | Path, cfg: dict | None = None) -> dict:
         write_path = ann_root() / "corrected" / cls_dir / f"{stem}.txt"
         write_path.parent.mkdir(parents=True, exist_ok=True)
         lines = [
-            f"{cid} " + " ".join(f"{v:.6f}" for v in (p / np.array([w, h], np.float32)).clip(0, 1).reshape(-1))
+            f"{cid} " + " ".join(
+                f"{v:.6f}" for v in (p / np.array([w, h], np.float32)).clip(0, 1).reshape(-1))
             for cid, p in corr
         ]
         write_path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf8")

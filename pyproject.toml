@@ -45,3 +45,10 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+extend-exclude = ["data", "results", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

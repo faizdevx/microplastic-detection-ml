@@ -10,7 +10,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import yaml
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor

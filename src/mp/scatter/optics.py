@@ -46,7 +46,7 @@ class Rig:
 
 
 def rig_from_config(cfg: dict) -> Rig:
-    g, l, d, med = cfg["geometry"], cfg["laser"], cfg["detector"], cfg["medium"]
+    g, las, d, med = cfg["geometry"], cfg["laser"], cfg["detector"], cfg["medium"]
     return Rig(
         theta_deg=tuple(float(t) for t in g["theta_deg"]),
         distance_m=g["distance_mm"] * 1e-3,
@@ -54,8 +54,8 @@ def rig_from_config(cfg: dict) -> Rig:
         path_m=g["path_length_mm"] * 1e-3,
         beam_diameter_m=g["beam_diameter_mm"] * 1e-3,
         independent_volumes=float(g["independent_volumes"]),
-        laser_W=l["power_mW"] * 1e-3,
-        wavelength_nm=float(l["wavelength_nm"]),
+        laser_W=las["power_mW"] * 1e-3,
+        wavelength_nm=float(las["wavelength_nm"]),
         n_medium=med["n"],
         responsivity=d["responsivity_A_W"],
         dark_current_A=d["dark_current_nA"] * 1e-9,
