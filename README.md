@@ -142,25 +142,60 @@ Polymer Classification
 
 ## Concentration Estimation
 
-Models evaluated:
+**Status of the scattering results.** There is no measured scattering dataset in this
+repository. The concentration results below come from a physics-based simulator of the
+rig (Mie theory for the particles, a photon Monte Carlo for multiple scattering, and a
+photodiode, amplifier and ADC model), so they validate the regression method, not an
+instrument. The rig values (detector angles, distances, amplifier gain, laser power, ADC)
+have not been measured; they are parameters in `configs/scattering.yaml`, and the analyses
+sweep them. `final_dataset.csv` (the earlier S1-S4 table) has no documented origin and is
+not used for any result here.
 
-- Linear Regression
-- Lasso Regression
-- Random Forest Regression
-- Support Vector Regression (RBF)
+Data: `data/processed/scattering_v1.csv` (`source` column = `simulated`), produced by
+`make sim`. Regression: `make train-reg`; the full tables are in `results/phase3_summary.md`.
 
-Features:
+Models: Lasso, Ridge, PLS, Random Forest, SVR (RBF), Gaussian process, and an inversion
+of the forward model. Features: dark-subtracted S1-S4, log S, S_mean, S_std, S1/S4, S2/S4,
+S1/S3 and a forward/backward ratio.
 
-```
-S1
-S2
-S3
-S4
-S_mean
-S_std
-Forward/Backward Ratio
-Scattering Ratios
-```
+Fixed rig geometry, concentration levels unseen in training (5-fold, grouped):
+
+| Model | R² (95 % CI) | MAE mg/L | MAPE % | 90 % interval coverage |
+|---|---|---|---|---|
+| lasso | 0.807 (0.627 to 0.858) | 0.745 | 46.4 | 0.88 |
+| ridge | 0.804 (0.629 to 0.850) | 0.746 | 46.3 | 0.88 |
+| pls | 0.550 (0.174 to 0.787) | 0.936 | 52.2 | 0.91 |
+| random_forest | 0.771 (0.512 to 0.837) | 0.834 | 47.8 | 0.93 |
+| svr_rbf | 0.797 (0.578 to 0.862) | 0.787 | 43.5 | 0.93 |
+| gaussian_process | 0.715 (0.576 to 0.836) | 0.842 | 46.1 | 0.90 |
+| physics_inversion | 0.613 (0.466 to 0.728) | 0.896 | 45.5 | 0.92 |
+
+Reading these numbers:
+
+- Accuracy is limited by particle-number noise: at 0.1-10 mg/L there are only a handful of
+  50 µm particles in the illuminated volume of a reading, so MAPE stays around
+  43 % even for the best model (lasso).
+- Trained on one geometry and tested on others (angles ±5°, distance ±10 %, gain ±20 %),
+  the log10 R² of the random forest goes from 0.85 to 0.80, and of Lasso to
+  0.76; if the blank level is not re-measured on the new geometry the linear models fail
+  (`results/phase3_summary.md`). Calibration on the real rig geometry matters.
+- Scattering alone barely separates PVC from Nylon: at 10 mg/L, S1 differs by
+  16 % (d′ = 1.6), mostly through
+  density (more particles per mg/L for Nylon), not refractive index. Polymer identity comes
+  from the imaging module.
+- With the default rig values the 10-bit ADC saturates S1 at about
+  45 mg/L, and S3 and S4 (90° and 135°) carry almost no signal.
+
+| Angular curves | Linearity |
+|---|---|
+| ![angular](results/sensing/figures/angular_curves.png) | ![linearity](results/sensing/figures/linearity.png) |
+
+| Geometry sensitivity | Regression |
+|---|---|
+| ![geometry](results/sensing/figures/geometry_sensitivity.png) | ![regression](results/sensing/figures/regression_e1.png) |
+
+Equations, assumptions and limits: `docs/scattering_model.md`. Sources for every constant:
+`docs/literature_params.csv`.
 
 ---
 
@@ -297,33 +332,23 @@ Details and limits are in `MODEL_CARD.md`.
 
 # Optical Physics
 
-The concentration estimation module is based on:
+The scattering model (`src/mp/scatter/`) is built from:
 
-- Beer-Lambert Law
-- Mie Scattering Theory
-- Multi-Angle Light Scattering
-- Forward Scattering Asymmetry
-- Multiple Scattering Correction
+- Mie theory for spheres of PVC (n = 1.54) and Nylon-6 (n = 1.53) in water (n = 1.331) at 650 nm
+- Number density from mass concentration for a log-normal size distribution
+- Beer-Lambert attenuation, a transport-cross-section correction, and a photon Monte Carlo
+  with next-event detector estimates for multiple scattering
+- BPW34 photodiode, transimpedance amplifier, shot / dark / Johnson noise, laser drift,
+  particle-number (Poisson) noise, and ADC quantisation and clipping
 
-For particles ranging from:
+For particles of 10-100 µm and a 650 nm laser the size parameter is about 64-640, so
+scattering is strongly forward peaked. Optical depth over the 10 mm path reaches 0.1 at
+279 mg/L, so the 0.1-10 mg/L working range is almost entirely
+single scattering; multiple scattering only matters well above it.
 
-```
-10–100 μm
-```
-
-and laser wavelength:
-
-```
-650 nm
-```
-
-the dominant scattering mechanism becomes:
-
-```
-Mie Scattering
-```
-
-which exhibits strong forward scattering characteristics.
+Detection limits at the default rig values (3.3σ/slope and 10σ/slope, σ at 0.1 mg/L, S1):
+mcp3008: LOD 0.43 mg/L, LOQ 1.31 mg/L; ads1115: LOD 0.43 mg/L, LOQ 1.30 mg/L. They depend on the unmeasured rig parameters; the most influential are
+tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`).
 
 ---
 
