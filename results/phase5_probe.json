@@ -1,0 +1,105 @@
+{
+  "baseline": {
+    "probe": {
+      "n_images": 865,
+      "exposure_overall": {
+        "accuracy": 0.8497109826589595,
+        "chance": 0.33410404624277457
+      },
+      "exposure_within_class": {
+        "accuracy": 0.753524945770065,
+        "chance": 0.33534503124932885
+      },
+      "resolution": {
+        "accuracy": 0.8542413381123058,
+        "chance": 0.4253285543608124,
+        "n_resolutions": 6
+      }
+    },
+    "prediction_coupling": {
+      "NYLON": 0.16822817051774716,
+      "PVC": 0.6260234520449588,
+      "mean_abs": 0.397125811281353
+    }
+  },
+  "V1_local_normalisation": {
+    "probe": {
+      "n_images": 865,
+      "exposure_overall": {
+        "accuracy": 0.730635838150289,
+        "chance": 0.33410404624277457
+      },
+      "exposure_within_class": {
+        "accuracy": 0.663071025106849,
+        "chance": 0.33534503124932885
+      },
+      "resolution": {
+        "accuracy": 0.9032258064516129,
+        "chance": 0.4253285543608124,
+        "n_resolutions": 6
+      }
+    },
+    "prediction_coupling": {
+      "NYLON": 0.017964181323047026,
+      "PVC": 0.5856335166149784,
+      "mean_abs": 0.3017988489690127
+    }
+  },
+  "V2_exposure_randomisation": {
+    "probe": {
+      "n_images": 865,
+      "exposure_overall": {
+        "accuracy": 0.8497109826589595,
+        "chance": 0.33410404624277457
+      },
+      "exposure_within_class": {
+        "accuracy": 0.753524945770065,
+        "chance": 0.33534503124932885
+      },
+      "resolution": {
+        "accuracy": 0.8542413381123058,
+        "chance": 0.4253285543608124,
+        "n_resolutions": 6
+      }
+    },
+    "prediction_coupling": {
+      "NYLON": 0.29874808410268106,
+      "PVC": 0.6797548887319963,
+      "mean_abs": 0.4892514864173387
+    }
+  },
+  "V3_patch_cnn": {
+    "probe": {
+      "n_images": 865,
+      "exposure_overall": {
+        "accuracy": 0.6011560693641619,
+        "chance": 0.33410404624277457
+      },
+      "exposure_within_class": {
+        "accuracy": 0.49028156611756624,
+        "chance": 0.33534503124932885
+      },
+      "resolution": {
+        "accuracy": 0.6845878136200717,
+        "chance": 0.4253285543608124,
+        "n_resolutions": 6
+      }
+    },
+    "prediction_coupling": {
+      "NYLON": 0.2658559627532781,
+      "PVC": 0.3433194446178357,
+      "mean_abs": 0.3045877036855569
+    }
+  },
+  "note": "V2 changes training, not features, so its feature probe equals the baseline's; its coupling row shows the effect of exposure randomisation on predictions",
+  "meta": {
+    "timestamp_utc": "2026-10-26T19:04:48+00:00",
+    "git_commit": "76babd0b352832a01e60018d2f34dcb9d106647d",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  }
+}

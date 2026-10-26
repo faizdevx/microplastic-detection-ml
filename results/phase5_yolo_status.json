@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-26T18:31:42+00:00",
+    "git_commit": "76babd0b352832a01e60018d2f34dcb9d106647d",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "gpu": {
+    "torch_cuda_available": false,
+    "torch_build": "2.14.0+cpu",
+    "nvidia_gpus_detected": [
+      "NVIDIA GeForce RTX 3050 Laptop GPU"
+    ]
+  },
+  "trained": false,
+  "reason": "a CUDA-enabled PyTorch build and a GPU are required; none is usable here",
+  "labels": {
+    "corrected": 0,
+    "auto": 1020,
+    "description": "trained on auto-generated masks (uncorrected)"
+  },
+  "commands": [
+    "python -m mp.cli segment",
+    "for k in 0 1 2 3 4: python -m mp.cli train-seg --fold $k",
+    "for k in 0 1 2 3 4: python -m mp.cli train-seg --data res_matched_$k",
+    "python -m mp.cli train-seg --data cross_a_to_b",
+    "python -m mp.cli train-seg --data cross_b_to_a",
+    "python -m mp.cli train-seg --all"
+  ],
+  "note": "masks are the classical segmentation's output, so a trained model learns to imitate it plus the class label"
+}
