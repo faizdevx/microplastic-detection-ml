@@ -1,0 +1,28 @@
+# Concentration regression from S1-S4. Written so the same code runs on any table with
+# the columns of data/processed/scattering_v1.csv.
+seed: 42
+input: data/processed/scattering_v1.csv
+target: conc_mg_L                  # model is trained on log10(conc); metrics on the linear scale
+drop_saturated: true
+exclude_blank_from_training: true  # blank rows only provide the dark/offset level
+
+cv:
+  n_splits: 5
+  schemes: [by_concentration_level, by_replicate]
+
+models:
+  lasso: {alpha: 0.001}
+  ridge: {alpha: 1.0}
+  pls: {n_components: 3}
+  random_forest: {n_estimators: 200, min_samples_leaf: 2}
+  svr_rbf: {C: 10.0, epsilon: 0.05, gamma: scale}
+  gaussian_process: {max_train: 600}
+  physics_inversion: {fit_gain: true}
+
+bootstrap: 1000
+conformal:
+  coverage: 0.90
+  calibration_fraction: 0.2
+
+robustness:
+  train_geometry: g0               # train on this geometry, test on all others

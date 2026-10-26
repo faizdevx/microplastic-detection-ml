@@ -1,0 +1,27 @@
+name,value,unit,uncertainty,source,note
+n_water_650nm,1.331,1,0.001,"Daimon & Masumura, Appl. Opt. 46, 3811 (2007), doi:10.1364/AO.46.003811",Pure water 20 C; dn/dT about -1e-4 per K; exact third decimal TODO-verify against the paper's table
+n_pvc_650nm,1.54,1,0.02,"Brandrup, Immergut, Grulke (eds.), Polymer Handbook 4th ed., Wiley 1999, Sect. VI refractive indices",Range 1.52-1.55 in the literature; dispersion small over the visible; fillers and plasticisers shift it; page TODO-verify
+n_nylon6_650nm,1.53,1,0.01,"Brandrup, Immergut, Grulke (eds.), Polymer Handbook 4th ed., Wiley 1999, Sect. VI refractive indices",Nylon-6 about 1.53; crystallinity and moisture uptake change it; page TODO-verify
+k_pvc_650nm,0,1,UNMEASURED,assumption,Imaginary index taken as zero: neutral PVC is non-absorbing in the red; pigmented or filled particles are not covered
+k_nylon6_650nm,0,1,UNMEASURED,assumption,Imaginary index taken as zero: neutral Nylon-6 is non-absorbing in the red; dyed particles are not covered
+rho_pvc,1.38,g/cm3,0.05,"Brandrup, Immergut, Grulke (eds.), Polymer Handbook 4th ed., Wiley 1999",Rigid PVC 1.35-1.45 depending on additives; TODO-verify table
+rho_nylon6,1.14,g/cm3,0.02,"Brandrup, Immergut, Grulke (eds.), Polymer Handbook 4th ed., Wiley 1999",Nylon-6 1.13-1.15; TODO-verify table
+bpw34_responsivity_650nm,0.4,A/W,0.1,"Vishay BPW34 datasheet, document number 81521",Read from the spectral sensitivity curve; TODO-verify at 650 nm
+bpw34_active_area,7.5,mm2,0.5,"Vishay BPW34 datasheet, document number 81521",Radiant sensitive area; TODO-verify
+bpw34_dark_current,2,nA,3,"Vishay BPW34 datasheet, document number 81521",Typical reverse dark current at VR=10 V; maximum is higher; TODO-verify
+bpw34_capacitance,70,pF,10,"Vishay BPW34 datasheet, document number 81521",Typical junction capacitance at a few volts reverse bias; TODO-verify
+laser_wavelength,650,nm,UNMEASURED,README hardware table,Nominal diode wavelength; real diodes vary by several nm
+laser_power,"1-5",mW,UNMEASURED,README hardware table (650 nm laser),Default range for a class 3R module; actual power not measured
+laser_drift,1,%,UNMEASURED,assumption,Slow output drift of a free-running diode; range 0.5-3 %
+mcp3008_resolution,10,bit,0,"Microchip MCP3008 datasheet DS21295",10-bit SAR ADC; Vref 2.7-5.5 V; the legacy file clips at 0 and 1023
+mcp3008_vref,3.3,V,UNMEASURED,"Microchip MCP3008 datasheet DS21295",Supply from the Raspberry Pi 3.3 V rail assumed
+ads1115_resolution,16,bit,0,"Texas Instruments ADS1115 datasheet SBAS444",16-bit signed delta-sigma ADC; 15 usable bits for positive signals
+ads1115_full_scale,4.096,V,0,"Texas Instruments ADS1115 datasheet SBAS444",PGA setting +/-4.096 V; other settings 0.256-6.144 V
+tia_feedback_resistance,100,Mohm,UNMEASURED,assumption,Typical photodiode transimpedance range 1 Mohm to 1 Gohm; actual value not measured
+detector_angles,"20,45,90,135",deg,UNMEASURED,assumption,Placeholder spread; actual angles not measured
+detector_distance,50,mm,UNMEASURED,assumption,Cuvette centre to photodiode; range 20-100 mm
+cuvette_path_length,10,mm,UNMEASURED,assumption,Standard 10 mm cuvette; range 5-20 mm
+beam_diameter,1,mm,UNMEASURED,assumption,Defines the illuminated volume; range 0.5-3 mm
+independent_volumes_per_reading,100,1,UNMEASURED,assumption,Stirring and averaging replace the illuminated volume this many times per reading; range 10-1000
+stray_light_fraction,1e-8,1,UNMEASURED,assumption,Cuvette-wall and optics stray light reaching a detector as a fraction of laser power; range 1e-9 to 1e-6
+ambient_offset,2,mV,UNMEASURED,assumption,Residual ambient light and amplifier offset; range 0-10 mV

@@ -1,6 +1,6 @@
 PY ?= python
 
-.PHONY: install data audit test features train-cls controls train-seg report-phase2
+.PHONY: install data audit test features train-cls controls train-seg report-phase2 sim sim-analyse train-reg report-phase3
 
 install:
 	$(PY) -m pip install -e ".[dev]"
@@ -31,3 +31,15 @@ train-seg:
 
 report-phase2:
 	$(PY) -m mp.cli report-phase2
+
+sim:
+	$(PY) -m mp.cli scatter-generate
+
+sim-analyse:
+	$(PY) -m mp.cli scatter-analyse
+
+train-reg:
+	$(PY) -m mp.cli train-reg
+
+report-phase3:
+	$(PY) -m mp.cli report-phase3

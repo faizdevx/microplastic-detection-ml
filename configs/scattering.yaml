@@ -1,0 +1,70 @@
+# Multi-angle scattering model. Values come from docs/literature_params.csv (key in
+# `ref`) or are rig parameters that have not been measured (UNMEASURED, with a range
+# that the analyses sweep).
+seed: 7
+source_label: simulated        # value of the `source` column
+
+medium:
+  n: 1.331                     # n_water_650nm
+  temperature_K: 293.15
+
+polymers:
+  PVC:   {n: 1.54, k: 0.0, density_g_cm3: 1.38}     # n_pvc_650nm, k_pvc_650nm, rho_pvc
+  NYLON: {n: 1.53, k: 0.0, density_g_cm3: 1.14}     # n_nylon6_650nm, k_nylon6_650nm, rho_nylon6
+
+size_distribution:             # log-normal by number
+  options:
+    - {d_median_um: 30, sigma_ln: 0.3}
+    - {d_median_um: 50, sigma_ln: 0.3}
+    - {d_median_um: 70, sigma_ln: 0.3}
+  nodes: 40                    # equal-probability quadrature nodes
+
+concentration:                 # mg/L
+  min: 0.1
+  max: 10.0
+  levels: 20
+  blanks: true                 # also write blank rows (concentration 0)
+
+geometry:                      # all UNMEASURED
+  theta_deg: [20, 45, 90, 135]
+  distance_mm: 50              # range 20-100
+  path_length_mm: 10           # range 5-20
+  beam_diameter_mm: 1.0        # range 0.5-3
+  independent_volumes: 100     # range 10-1000
+  samples: 3                   # extra perturbed geometries besides the default
+  jitter: {theta_deg: 5.0, gain_rel: 0.2, distance_rel: 0.1}
+
+laser:
+  wavelength_nm: 650
+  power_mW: 5.0                # range 1-5
+  drift_pct: 1.0
+
+detector:
+  responsivity_A_W: 0.4
+  area_mm2: 7.5
+  dark_current_nA: 2.0
+  tia_Mohm: 100.0              # range 1-1000
+  bandwidth_Hz: 10.0
+  stray_light_fraction: 1.0e-8 # range 1e-9 to 1e-6
+  ambient_offset_mV: 2.0
+
+adc:
+  model: mcp3008               # mcp3008 | ads1115
+  options:
+    mcp3008: {bits: 10, full_scale_V: 3.3}
+    ads1115: {bits: 15, full_scale_V: 4.096}
+
+noise:
+  shot: true
+  dark: true
+  johnson: true
+  ambient: true
+  laser_drift: true
+  particle_number: true
+
+multiple_scattering: monte_carlo   # none | first_order | monte_carlo
+monte_carlo:
+  photons: 8000
+  max_order: 8
+
+replicates: 5

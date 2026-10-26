@@ -150,6 +150,45 @@ def _cmd_report(args) -> int:
     return 0
 
 
+def _cmd_scatter_generate(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.scatter import generate
+
+    generate.run()
+    return 0
+
+
+def _cmd_scatter_analyse(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.scatter import analysis
+
+    r = analysis.run()
+    print("analysis written; most sensitive:", r["geometry_sensitivity"]["most_sensitive"])
+    return 0
+
+
+def _cmd_train_reg(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.models import regression
+
+    exp = {"E1": "E1", "robustness": "robustness", "all": "all"}[args.experiment]
+    regression.run(exp)
+    return 0
+
+
+def _cmd_report3(args) -> int:
+    from mp.scatter import report
+
+    print(report.write_summary())
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -210,6 +249,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--holdout", action="store_true")
     p.add_argument("--i-know", action="store_true", help="allow re-evaluating the hold-out")
     p.set_defaults(func=_cmd_report)
+
+    sub.add_parser("scatter-generate", help="multi-angle scattering table").set_defaults(
+        func=_cmd_scatter_generate)
+    sub.add_parser("scatter-analyse", help="angular curves, contrast, linearity, limits"
+                   ).set_defaults(func=_cmd_scatter_analyse)
+    p = sub.add_parser("train-reg", help="concentration regression")
+    p.add_argument("--experiment", choices=["E1", "robustness", "all"], default="all")
+    p.set_defaults(func=_cmd_train_reg)
+    sub.add_parser("report-phase3", help="summary markdown").set_defaults(func=_cmd_report3)
 
     args = ap.parse_args(argv)
     return args.func(args)
