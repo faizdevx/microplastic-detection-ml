@@ -156,7 +156,7 @@ def _cmd_scatter_generate(args) -> int:
     warnings.filterwarnings("ignore")
     from mp.scatter import generate
 
-    generate.run()
+    generate.run(adc_model=args.adc)
     return 0
 
 
@@ -186,6 +186,22 @@ def _cmd_report3(args) -> int:
     from mp.scatter import report
 
     print(report.write_summary())
+    return 0
+
+
+def _cmd_analyse(args) -> int:
+    import json
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp import analyse
+
+    try:
+        r = analyse.analyse(args.image, args.sensors, args.adc)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    print(json.dumps(r, indent=2) if args.json else analyse.format_text(r))
     return 0
 
 
@@ -250,14 +266,22 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--i-know", action="store_true", help="allow re-evaluating the hold-out")
     p.set_defaults(func=_cmd_report)
 
-    sub.add_parser("scatter-generate", help="multi-angle scattering table").set_defaults(
-        func=_cmd_scatter_generate)
+    p = sub.add_parser("scatter-generate", help="multi-angle scattering table")
+    p.add_argument("--adc", choices=["mcp3008", "ads1115"], help="ADC option (default: config)")
+    p.set_defaults(func=_cmd_scatter_generate)
     sub.add_parser("scatter-analyse", help="angular curves, contrast, linearity, limits"
                    ).set_defaults(func=_cmd_scatter_analyse)
     p = sub.add_parser("train-reg", help="concentration regression")
     p.add_argument("--experiment", choices=["E1", "robustness", "all"], default="all")
     p.set_defaults(func=_cmd_train_reg)
     sub.add_parser("report-phase3", help="summary markdown").set_defaults(func=_cmd_report3)
+
+    p = sub.add_parser("analyse", help="polymer from an image and/or concentration from S1-S4")
+    p.add_argument("--image")
+    p.add_argument("--sensors", type=float, nargs=4, metavar=("S1", "S2", "S3", "S4"))
+    p.add_argument("--adc", choices=["mcp3008", "ads1115"], default="mcp3008")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=_cmd_analyse)
 
     args = ap.parse_args(argv)
     return args.func(args)

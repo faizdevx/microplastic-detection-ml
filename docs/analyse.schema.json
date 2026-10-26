@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "mp analyse output",
+  "type": "object",
+  "required": ["polymer", "particles", "concentration", "warnings", "versions", "git_commit"],
+  "additionalProperties": false,
+  "properties": {
+    "polymer": {
+      "type": ["object", "null"],
+      "required": ["label", "p_nylon", "confidence", "confidence_note"],
+      "additionalProperties": false,
+      "properties": {
+        "label": {"enum": ["PVC", "NYLON", null]},
+        "p_nylon": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "confidence": {"type": ["number", "null"], "minimum": 0.5, "maximum": 1},
+        "confidence_note": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    },
+    "particles": {
+      "type": ["object", "null"],
+      "required": ["count", "size_hist_px", "um_per_px", "pixel_size_note"],
+      "additionalProperties": false,
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "size_hist_px": {
+          "type": "object",
+          "required": ["bin_edges_px", "counts"],
+          "additionalProperties": false,
+          "properties": {
+            "bin_edges_px": {"type": "array", "items": {"type": ["number", "string"]}},
+            "counts": {"type": "array", "items": {"type": "integer", "minimum": 0}}
+          }
+        },
+        "um_per_px": {"type": ["number", "null"]},
+        "pixel_size_note": {"type": ["string", "null"]}
+      }
+    },
+    "concentration": {
+      "type": ["object", "null"],
+      "required": ["mg_L", "interval_90", "note", "model", "adc", "geometry"],
+      "additionalProperties": false,
+      "properties": {
+        "mg_L": {"type": ["number", "null"], "minimum": 0},
+        "interval_90": {"type": ["array", "null"], "items": {"type": "number"},
+                         "minItems": 2, "maxItems": 2},
+        "note": {"type": "string"},
+        "model": {"type": "string"},
+        "adc": {"type": "string"},
+        "geometry": {"type": "string"},
+        "reason": {"type": "string"},
+        "training_range_mg_L": {"type": "array", "items": {"type": "number"},
+                                  "minItems": 2, "maxItems": 2}
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "versions": {"type": "object"},
+    "git_commit": {"type": "string"}
+  }
+}
