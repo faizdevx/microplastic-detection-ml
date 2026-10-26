@@ -25,16 +25,18 @@ The system aims to detect and quantify microplastic particles ranging from **10�
 
 ---
 
-# Project Status
+# What Is Demonstrated, and What Is Not
 
 | Part | State | Evidence |
 |---|---|---|
 | Image dataset audit | Done | 2040 files are 600 near-duplicate groups; every split is made by group (`DATASET_CARD.md`) |
-| Polymer identification, per-particle classifier | Done, with a caveat | CV accuracy 0.976, hold-out 0.987 (95 % CI 0.952 to 1.000); a model that sees only the particle-free background still reaches 0.906 balanced accuracy, so part of the signal is acquisition, not polymer (`MODEL_CARD.md`) |
-| YOLOv11 instance segmentation | Pipeline only | Implemented and smoke-tested; no trained model, no mAP. Masks are automatic and uncorrected |
-| Concentration estimation | Rig model only | No measured scattering data exist. Results come from a simulator of the rig (see below); best model lasso, R² 0.81 |
-| Hardware | Not characterised | Detector angles, distances, amplifier gain, laser power and ADC are not measured |
+| Polymer identification (per-particle classifier) | Done, with a caveat | CV accuracy 0.976, hold-out 0.987 (95 % CI 0.952 to 1.000). A model that sees only the particle-free background still reaches 0.906 balanced accuracy, so part of the signal is acquisition, not polymer (`MODEL_CARD.md`) |
+| YOLOv11 instance segmentation | Pipeline only | Implemented, smoke-tested and exported to ONNX with untrained weights; no trained model, no mAP. Masks are automatic and uncorrected |
+| Concentration estimation | Rig model only | No measured scattering data exist. The results come from a simulator of the rig (see below); best model lasso, R² 0.81 |
+| Hardware | Not built or measured as described | Detector angles, distances, amplifier gain, laser power and ADC are placeholders (`docs/hardware/`) |
 | Pixel size (µm per pixel) | Not calibrated | Sizes are reported in pixels |
+| Demo app and `mp analyse` | Works on this machine | Quality gates withhold a polymer label when the input is unsuitable; every concentration estimate is labelled as a rig model estimate |
+| Edge deployment | Not run on a Raspberry Pi | 176 ms median per image on this machine's CPU (12 threads, `results/deploy_benchmark.json`); the Pi table in `docs/raspberry_pi.md` says "not run" |
 
 # Quick Start
 
@@ -43,12 +45,49 @@ git clone https://github.com/faizdevx/microplastic-detection-ml.git
 cd microplastic-detection-ml
 pip install -e ".[dev]"
 
-make data          # download RAW_DATASET.zip (548 MB), verify md5, extract
-make audit         # near-duplicate groups, audit, leak-free splits
-make features train-cls controls   # polymer classifier, explainability, confound controls
-make sim sim-analyse train-reg     # scattering model, analyses, concentration regression
-make report-phase2 report-phase3   # generated summaries in results/
+make all           # data, audit, features, classifier, controls, scattering model, regression
+python app/app.py  # local demo at http://127.0.0.1:7860
 pytest
+```
+
+`make all` downloads the 548 MB image archive, never evaluates the hold-out and does not train
+YOLOv11-seg (`make train-seg-full`, GPU recommended). Single steps: `make data`, `make audit`,
+`make features train-cls controls`, `make sim sim-analyse train-reg`, `make report-phase2 report-phase3`.
+
+Analyse an image and/or four detector counts (output format: `docs/api.md`):
+
+```bash
+python -m mp.cli analyse --image app/examples/nylon_example.jpg --sensors 160 70 64 64
+```
+
+```
+polymer: NYLON (P(NYLON) 0.879, confidence 0.879); probabilities are not well calibrated (hold-out ECE 0.125)
+particles: 24; size histogram (px) [10, 7, 5, 2, 0, 0, 0, 0]
+concentration: 2.62 mg/L (90 % interval 1.14 to 6.03); rig model estimate, not a measurement
+warning: class is partly predictable from background and exposure alone; see MODEL_CARD.md
+```
+
+# Repository Map
+
+```bash
+microplastic-detection-ml/
+├── src/mp/
+│   ├── data/        fetch, near-duplicate groups, audit, splits, group-aware loader
+│   ├── imaging/     normalisation, segmentation, per-particle features, scale calibration
+│   ├── models/      polymer classifier, YOLO-seg pipeline, concentration regression
+│   ├── eval/        metrics, confound controls, explainability, hold-out report
+│   ├── annotate/    auto masks, correction export/import, mask IoU
+│   ├── scatter/     Mie model, photon Monte Carlo, detector chain, analyses
+│   ├── deploy/      ONNX export, benchmark, camera capture
+│   └── analyse.py   `mp analyse`
+├── app/             Gradio demo and example images
+├── configs/         data, classifier, yolo_seg, scattering, regression
+├── data/processed/  groups.csv, splits.json, scattering_v1.csv
+├── docs/            api, scattering model, literature parameters, hardware, Raspberry Pi, annotation
+├── results/         generated JSON, summaries, figures and the claims audit
+├── tests/  tools/   offline tests; checksum, requirements and audit scripts
+├── MODEL_CARD.md  DATASET_CARD.md  RELEASE_NOTES.md  CITATION.cff
+└── Makefile  Dockerfile  environment.yml
 ```
 
 ---
@@ -424,44 +463,25 @@ tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`)
 
 ---
 
-# Project Structure
+# Limitations
 
-```bash
-microplastic-detection-ml/
-├── src/mp/
-│   ├── data/        fetch, near-duplicate groups, audit, splits, group-aware loader
-│   ├── imaging/     normalisation, segmentation, per-particle features, scale calibration
-│   ├── models/      polymer classifier, YOLO-seg pipeline, concentration regression
-│   ├── eval/        metrics, confound controls, explainability, hold-out report
-│   ├── annotate/    auto masks, correction export/import, mask IoU
-│   └── scatter/     Mie model, photon Monte Carlo, detector chain, analyses
-├── configs/         data, classifier, yolo_seg, scattering, regression
-├── data/processed/  groups.csv, splits.json, scattering_v1.csv (large files are fetched)
-├── results/         generated JSON, summaries and figures
-├── docs/            scattering model, literature parameters, annotation guide, plan
-├── tests/           offline tests (pytest)
-├── notebooks/       data audit view, legacy exploration
-├── MODEL_CARD.md  DATASET_CARD.md
-└── Makefile
-```
-
----
-
-# Installation
-
-```bash
-git clone https://github.com/faizdevx/microplastic-detection-ml.git
-
-cd microplastic-detection-ml
-
-pip install -e ".[dev]"
-```
+- The polymer classifier partly reads acquisition (background, exposure, image size), not only
+  particles; its accuracy is an upper bound for this dataset. Only PVC and Nylon, pristine
+  laboratory powders, one optical setup.
+- The 2040 image files are 600 near-duplicate groups, so the effective sample size is much smaller
+  than the file count.
+- YOLOv11 segmentation is not trained and the particle masks are automatic and uncorrected.
+- The concentration numbers describe a model of the rig with unmeasured parameters, not an instrument.
+  Particle-number noise limits accuracy at 0.1-10 mg/L, and the model assumes spherical, non-absorbing,
+  single-polymer particles.
+- Pixel size is not calibrated, so no particle size in µm is reported.
+- Nothing has been run on a Raspberry Pi.
 
 ---
 
 # Citation
 
-If you use this repository or dataset, please cite:
+If you use this repository or dataset, please cite (see also `CITATION.cff`):
 
 ```bibtex
 @dataset{ansari2026microplastic,

@@ -49,8 +49,7 @@ python app/app.py
 - Probabilities are not well calibrated (ECE 0.125).
 
 ### Not evaluated
-- **YOLOv11-seg:** only a CPU smoke test was run (2 epochs, 10 images,
-  mask mAP50 0.00, which is not a result). No per-fold training, no mAP, no
+- **YOLOv11-seg:** only a CPU smoke test was run (2 epochs, 10 images; the metrics of that run are not a result). No per-fold training, no mAP, no
   McNemar comparison, no counting error. This environment has CPU-only PyTorch.
 - **Human-corrected masks:** none imported; masks are auto-generated.
 - **Pixel calibration:** none.

@@ -10,9 +10,7 @@
     "torch": "2.14.0+cpu"
   },
   "input": "data/processed/scattering_v1.csv",
-  "source_values": [
-    "simulated"
-  ],
+  "source_column": "simulated",
   "E1": {
     "geometry": "g0",
     "adc_model": "mcp3008",
