@@ -1,0 +1,14 @@
+part,specification,quantity,source_or_part_number,unit_price,status
+Laser module,"650 nm diode, 1-5 mW (README); actual power not measured",1,to be chosen,,chosen
+UV LED,365 nm (README),1,to be chosen,,chosen
+Camera,Raspberry Pi Global Shutter Camera,1,Raspberry Pi Ltd,,chosen
+Photodiode,"Vishay BPW34, 7.5 mm2 active area",4,Vishay BPW34 (datasheet 81521),,chosen
+Objective,10x microscope objective (README),1,to be chosen,,chosen
+Controller,Raspberry Pi 5,1,Raspberry Pi Ltd,,chosen
+Optical filter,520 nm band-pass (README),1,to be chosen,,chosen
+Transimpedance amplifier,"low-bias-current op-amp, one per photodiode, R_f 1 Mohm to 1 Gohm",4,to be chosen,,to be chosen
+Feedback resistor / capacitor,R_f and C_f set gain and bandwidth,4,to be chosen,,to be chosen
+External ADC,"MCP3008 (10-bit, Microchip DS21295) or ADS1115 (16-bit, TI SBAS444)",1,to be chosen,,to be chosen
+Cuvette,"square, 10 mm path length (range 5-20 mm)",1,to be chosen,,to be chosen
+Cuvette holder,fixes cuvette and detector angles,1,to be chosen,,to be chosen
+Power supply,"regulated rails for laser, UV LED and amplifiers",1,to be chosen,,to be chosen

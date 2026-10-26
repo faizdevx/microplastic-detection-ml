@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="sans-serif">
+<defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#334"/></marker></defs>
+<rect width="900" height="420" fill="white"/>
+<text x="450" y="24" text-anchor="middle" font-size="15">Scattering channel: signal chain</text>
+<rect x="20" y="175" width="90" height="60" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="65.0" y="201.5" text-anchor="middle" font-size="12">650 nm</text>
+<text x="65.0" y="216.5" text-anchor="middle" font-size="12">laser</text>
+<line x1="110" y1="205" x2="170" y2="205" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="170" y="160" width="90" height="90" rx="6" fill="#f7f2e6" stroke="#334" />
+<text x="215.0" y="201.5" text-anchor="middle" font-size="12">cuvette</text>
+<text x="215.0" y="216.5" text-anchor="middle" font-size="12">(sample)</text>
+<line x1="260" y1="205" x2="330" y2="85" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="330" y="60" width="90" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="375.0" y="81.5" text-anchor="middle" font-size="12">BPW34 #1</text>
+<text x="375.0" y="96.5" text-anchor="middle" font-size="12">θ1</text>
+<line x1="420" y1="85" x2="470" y2="85" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="470" y="60" width="110" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="525.0" y="81.5" text-anchor="middle" font-size="12">TIA 1</text>
+<text x="525.0" y="96.5" text-anchor="middle" font-size="12">R_f ∥ C_f</text>
+<line x1="580" y1="85" x2="640" y2="85" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<line x1="260" y1="205" x2="330" y2="165" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="330" y="140" width="90" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="375.0" y="161.5" text-anchor="middle" font-size="12">BPW34 #2</text>
+<text x="375.0" y="176.5" text-anchor="middle" font-size="12">θ2</text>
+<line x1="420" y1="165" x2="470" y2="165" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="470" y="140" width="110" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="525.0" y="161.5" text-anchor="middle" font-size="12">TIA 2</text>
+<text x="525.0" y="176.5" text-anchor="middle" font-size="12">R_f ∥ C_f</text>
+<line x1="580" y1="165" x2="640" y2="165" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<line x1="260" y1="205" x2="330" y2="245" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="330" y="220" width="90" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="375.0" y="241.5" text-anchor="middle" font-size="12">BPW34 #3</text>
+<text x="375.0" y="256.5" text-anchor="middle" font-size="12">θ3</text>
+<line x1="420" y1="245" x2="470" y2="245" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="470" y="220" width="110" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="525.0" y="241.5" text-anchor="middle" font-size="12">TIA 3</text>
+<text x="525.0" y="256.5" text-anchor="middle" font-size="12">R_f ∥ C_f</text>
+<line x1="580" y1="245" x2="640" y2="245" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<line x1="260" y1="205" x2="330" y2="325" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="330" y="300" width="90" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="375.0" y="321.5" text-anchor="middle" font-size="12">BPW34 #4</text>
+<text x="375.0" y="336.5" text-anchor="middle" font-size="12">θ4</text>
+<line x1="420" y1="325" x2="470" y2="325" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="470" y="300" width="110" height="50" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="525.0" y="321.5" text-anchor="middle" font-size="12">TIA 4</text>
+<text x="525.0" y="336.5" text-anchor="middle" font-size="12">R_f ∥ C_f</text>
+<line x1="580" y1="325" x2="640" y2="325" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="640" y="60" width="100" height="290" rx="6" fill="#e9f5ea" stroke="#334" />
+<text x="690.0" y="194.0" text-anchor="middle" font-size="12">external ADC</text>
+<text x="690.0" y="209.0" text-anchor="middle" font-size="12">MCP3008 (SPI)</text>
+<text x="690.0" y="224.0" text-anchor="middle" font-size="12">or ADS1115 (I²C)</text>
+<line x1="740" y1="205" x2="790" y2="205" stroke="#334" stroke-width="1.4" marker-end="url(#a)" />
+<rect x="790" y="175" width="90" height="60" rx="6" fill="#eef3fb" stroke="#334" />
+<text x="835.0" y="201.5" text-anchor="middle" font-size="12">Raspberry</text>
+<text x="835.0" y="216.5" text-anchor="middle" font-size="12">Pi 5</text>
+<text x="450" y="400" text-anchor="middle" font-size="11">V_i = (R·P_i + I_dark)·R_f + V_offset;  counts_i = floor(V_i / V_fs · 2^bits)</text>
+</svg>
