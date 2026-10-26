@@ -50,10 +50,14 @@ def _convexity(sub_mask: np.ndarray) -> float:
 
 
 def particle_features(
-    labels: np.ndarray, raw: np.ndarray, norm: np.ndarray, ring_px: int = 5
+    labels: np.ndarray, raw: np.ndarray, norm: np.ndarray, ring_px: int = 5,
+    exclude: np.ndarray | None = None,
 ) -> pd.DataFrame:
-    """One row per labelled particle. `raw` uint8 background-corrected, `norm` float [0,1]."""
+    """One row per labelled particle. `raw` uint8 background-corrected, `norm` float [0,1].
+    `exclude` marks extra foreground that the surround ring must avoid."""
     fg = labels > 0
+    if exclude is not None:
+        fg = fg | exclude
     h, w = labels.shape
     se = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * ring_px + 1, 2 * ring_px + 1))
     rawf = raw.astype(np.float32) / 255.0

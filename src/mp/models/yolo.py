@@ -219,3 +219,50 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
     out.write_text(json.dumps(res, indent=2), encoding="utf8")
     sc.to_csv(yolo_root() / f"preds_{res['data']}.csv", index=False)
     return res
+
+
+def gpu_status() -> dict:
+    """Is a CUDA device usable by PyTorch? Writes nothing; used for results/phase5_yolo_status.json."""
+    import shutil
+    import subprocess
+
+    try:
+        import torch
+
+        cuda, build = bool(torch.cuda.is_available()), torch.__version__
+    except Exception:
+        cuda, build = False, "not installed"
+    names = []
+    if shutil.which("nvidia-smi"):
+        r = subprocess.run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"],
+                           capture_output=True, text=True)
+        names = [ln.strip() for ln in r.stdout.splitlines() if ln.strip()]
+    return {"torch_cuda_available": cuda, "torch_build": build, "nvidia_gpus_detected": names}
+
+
+def write_status(cfg: dict | None = None) -> dict:
+    """Train only with a usable GPU; otherwise record why not and what to run."""
+    cfg = cfg or load_config()
+    g = gpu_status()
+    prov = label_provenance()
+    out = {
+        "meta": run_meta("cpu"),
+        "gpu": g,
+        "trained": False,
+        "reason": ("a CUDA-enabled PyTorch build and a GPU are required; none is usable here"
+                   if not g["torch_cuda_available"] else "GPU available: run the commands below"),
+        "labels": prov,
+        "commands": [
+            "python -m mp.cli segment",
+            "for k in 0 1 2 3 4: python -m mp.cli train-seg --fold $k",
+            "for k in 0 1 2 3 4: python -m mp.cli train-seg --data res_matched_$k",
+            "python -m mp.cli train-seg --data cross_a_to_b",
+            "python -m mp.cli train-seg --data cross_b_to_a",
+            "python -m mp.cli train-seg --all",
+        ],
+        "note": ("masks are the classical segmentation's output, so a trained model learns to "
+                 "imitate it plus the class label"),
+    }
+    (resolve(cfg["paths"]["results"]) / "phase5_yolo_status.json").write_text(
+        json.dumps(out, indent=2), encoding="utf8")
+    return out

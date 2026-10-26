@@ -230,6 +230,74 @@ def _cmd_benchmark(args) -> int:
     return 0
 
 
+def _cmd_phase5_features(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.imaging import invariant
+
+    print(invariant.build_tables(n_jobs=args.jobs))
+    return 0
+
+
+def _cmd_phase5(args) -> int:
+    import json
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.config import resolve
+    from mp.eval import acquisition_probe, phase5
+    from mp.eval.metrics import run_meta
+
+    out = phase5.run_all(only=args.only)
+    feats = {"baseline": phase5.I.BASE_FEATURES, "V1_local_normalisation": phase5.I.V1_FEATURES,
+             "V2_exposure_randomisation": phase5.I.BASE_FEATURES}
+    probe = acquisition_probe.run(out, feats, out["data"], out["rcfg"], out["emb"])
+    probe["meta"] = run_meta()
+    (resolve("results") / "phase5_probe.json").write_text(json.dumps(probe, indent=2), encoding="utf8")
+    return 0
+
+
+def _cmd_phase5_sets(args) -> int:
+    import json
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.config import resolve
+    from mp.eval import phase5
+    from mp.eval.metrics import run_meta
+
+    rcfg = phase5.load_robust_config()
+    res = phase5.feature_set_controls(phase5.load_data(with_patches=False), rcfg)
+    (resolve("results") / "phase5_feature_sets.json").write_text(
+        json.dumps({"meta": run_meta(), "results": res}, indent=2), encoding="utf8")
+    return 0
+
+
+def _cmd_report5(args) -> int:
+    import json
+
+    from mp.config import resolve
+    from mp.eval import phase5_report
+
+    res = resolve("results")
+    variants = json.loads((res / "phase5_variants.json").read_text(encoding="utf8"))
+    probe = json.loads((res / "phase5_probe.json").read_text(encoding="utf8"))
+    text, ver = phase5_report.write(variants, probe)
+    if args.model_card:
+        phase5_report.update_model_card(text)
+    print(res / "phase5_summary.md")
+    return 0
+
+
+def _cmd_yolo_status(args) -> int:
+    from mp.models import yolo
+
+    r = yolo.write_status(load_config(args.config))
+    print(r["reason"], r["gpu"])
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -315,6 +383,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--runs", type=int, default=50)
     p.add_argument("--pi", action="store_true", help="only valid on a Raspberry Pi")
     p.set_defaults(func=_cmd_benchmark)
+
+    p = sub.add_parser("phase5-features", help="invariant, pseudo-particle, augmented and patch tables")
+    p.add_argument("--jobs", type=int, default=-1)
+    p.set_defaults(func=_cmd_phase5_features)
+    p = sub.add_parser("phase5", help="evaluate baseline and V1-V3 with the controls and probes")
+    p.add_argument("--only", nargs="*")
+    p.set_defaults(func=_cmd_phase5)
+    sub.add_parser("phase5-sets", help="controls per feature set").set_defaults(func=_cmd_phase5_sets)
+    p = sub.add_parser("report-phase5", help="summary markdown (and MODEL_CARD section)")
+    p.add_argument("--model-card", action="store_true")
+    p.set_defaults(func=_cmd_report5)
+
+    sub.add_parser("yolo-status", help="record whether YOLO training is possible here").set_defaults(
+        func=_cmd_yolo_status)
 
     args = ap.parse_args(argv)
     return args.func(args)

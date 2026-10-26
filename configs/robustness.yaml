@@ -1,0 +1,27 @@
+# Phase 5: background- and exposure-robust polymer identification, evaluated on the
+# cross-validation pool only (the hold-out is never read).
+seed: 42
+
+tabular_model:                 # fixed, same for all tabular variants (no tuning)
+  name: hist_gb
+  params: {max_iter: 100, learning_rate: 0.1, max_leaf_nodes: 31}
+
+cnn:
+  epochs: 3
+  batch: 256
+  lr: 0.002
+  permutation_epochs: 1
+
+controls:
+  resolution_matched: ["640x480", "1280x960"]
+  permutations_tabular: 30
+  permutations_cnn: 10         # one 80/20 group split per permutation, one epoch
+  permutation_model_iter: 60
+
+probe:
+  exposure_bins: 3             # brightness tertiles
+  min_images_per_resolution: 30
+
+verdict:
+  cross_res_min_gain: 0.02     # balanced accuracy must rise by at least this
+  pseudo_min_drop: 0.05        # pseudo-particle (background) control must fall by at least this
