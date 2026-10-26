@@ -9,3 +9,4 @@ data/*
 data/processed/*
 !data/processed/splits.json
 !data/processed/groups.csv
+data/models/

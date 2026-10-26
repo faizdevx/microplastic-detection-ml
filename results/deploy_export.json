@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-26T17:55:11+00:00",
+    "git_commit": "1d8a962ff2d8478989003f0c2ef1a1488a4ca29d",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "yolo": {
+    "weights": "data/yolo/runs/smoke/weights/best.pt",
+    "kind": "smoke_test_2_epochs_not_trained",
+    "formats": {
+      "onnx": {
+        "status": "ok",
+        "path": "data/models/export/yolo_seg_smoke.onnx",
+        "imgsz": 640
+      },
+      "ncnn": {
+        "status": "not attempted",
+        "note": "the exporter downloads extra binaries; use --ncnn"
+      }
+    },
+    "note": "these weights come from a 2-epoch smoke test; they are not a trained model"
+  },
+  "baseline_a": {
+    "model": "hist_gb",
+    "n_features": 41,
+    "joblib": "data/models/baseline_a.joblib",
+    "onnx": {
+      "status": "ok",
+      "path": "data/models/export/baseline_a.onnx"
+    }
+  }
+}

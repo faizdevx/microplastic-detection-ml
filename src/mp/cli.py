@@ -205,6 +205,31 @@ def _cmd_analyse(args) -> int:
     return 0
 
 
+def _cmd_export(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.deploy import export
+
+    r = export.run(ncnn=args.ncnn)
+    print(r["yolo"].get("note", ""),
+          {k: v["status"] for k, v in r["yolo"].get("formats", {}).items()},
+          r["baseline_a"]["onnx"]["status"])
+    return 0
+
+
+def _cmd_benchmark(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.deploy import benchmark
+
+    r = benchmark.run(args.runs, pi=args.pi)
+    print(f"median {r['total']['median_ms']:.0f} ms, p95 {r['total']['p95_ms']:.0f} ms, "
+          f"peak RSS {r['peak_rss_mb']:.0f} MB, {r['runs']} runs")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -282,6 +307,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--adc", choices=["mcp3008", "ads1115"], default="mcp3008")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=_cmd_analyse)
+
+    p = sub.add_parser("export", help="export YOLO weights and the baseline model to ONNX")
+    p.add_argument("--ncnn", action="store_true")
+    p.set_defaults(func=_cmd_export)
+    p = sub.add_parser("benchmark", help="latency/memory of segmentation + classification")
+    p.add_argument("--runs", type=int, default=50)
+    p.add_argument("--pi", action="store_true", help="only valid on a Raspberry Pi")
+    p.set_defaults(func=_cmd_benchmark)
 
     args = ap.parse_args(argv)
     return args.func(args)
