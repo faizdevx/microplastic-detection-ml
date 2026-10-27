@@ -60,6 +60,9 @@ NUMBERS = {
     "LODSOneSixteenBit": ("results/sensing/analysis.json",
                           "detection_limits.adc.ads1115.LOD_mg_L_low_conc_sigma[0]", "{:.3f}"),
     "MedianLatencyMs": ("results/deploy_benchmark.json", "total.median_ms", "{:.0f}"),
+    "YoloMaskMapFifty": ("results/yolo_summary.json", "folds.mask_map50.mean", "{:.3f}"),
+    "YoloMaskMapFiftyStd": ("results/yolo_summary.json", "folds.mask_map50.std", "{:.3f}"),
+    "YoloImageAccuracy": ("results/yolo_summary.json", "folds.image_accuracy.mean", "{:.3f}"),
 }
 
 
@@ -200,6 +203,26 @@ def table_benchmark() -> pd.DataFrame:
         "Images per s": f"{b['throughput_images_per_s']:.2f}"}])
 
 
+def table_yolo() -> pd.DataFrame:
+    s = J("results/yolo_summary.json")
+
+    def row(name, g):
+        ba = g["image_balanced_accuracy"]
+        return {"Runs": name, "n": g["n_runs"],
+                "Mask mAP50": f"{g['mask_map50']['mean']:.3f} +- {g['mask_map50']['std']:.3f}",
+                "Mask mAP50-95": f"{g['mask_map50_95']['mean']:.3f} +- {g['mask_map50_95']['std']:.3f}",
+                "Image accuracy": f"{g['image_accuracy']['mean']:.3f} +- {g['image_accuracy']['std']:.3f}",
+                "Image balanced accuracy": f"{ba['mean']:.3f} +- {ba['std']:.3f}"}
+
+    rows = [row("cross-validation folds", s["folds"]),
+            row("resolution-matched folds", s["resolution_matched"])]
+    for k, v in s["cross_resolution"].items():
+        rows.append({"Runs": k.replace("_", " "), "n": 1, "Mask mAP50": f3(v["mask_map50"]),
+                     "Mask mAP50-95": f3(v["mask_map50_95"]), "Image accuracy": f3(v["image_accuracy"]),
+                     "Image balanced accuracy": f3(v["image_balanced_accuracy"])})
+    return pd.DataFrame(rows)
+
+
 TABLES = {
     "dataset_audit": (table_dataset, "Image archive: files and near-duplicate groups per class."),
     "classifier": (table_classifier,
@@ -209,6 +232,7 @@ TABLES = {
                "Acquisition probes: accuracy of reading exposure and resolution from the features."),
     "regression": (table_regression, "Concentration regression on the rig-model table."),
     "detection_limits": (table_detection, "Detection limits at the default rig values."),
+    "yolo": (table_yolo, "YOLOv11-seg on automatic masks, short schedule (30 epochs, patience 10)."),
     "benchmark": (table_benchmark, "Segmentation and classification speed on this machine."),
 }
 

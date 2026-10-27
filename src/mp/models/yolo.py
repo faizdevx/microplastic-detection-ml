@@ -161,7 +161,8 @@ def label_provenance() -> dict:
 
 
 def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None,
-                   cfg: dict | None = None) -> dict:
+                   cfg: dict | None = None, patience: int | None = None,
+                   batch: int | None = None, schedule: str | None = None) -> dict:
     """Train on data_key's train list, evaluate on its val list, save results JSON."""
     from ultralytics import YOLO
 
@@ -175,13 +176,22 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         data = build_datasets(pool, ycfg)[data_key]
         name = data_key
     args = train_args(ycfg, data, name, smoke)
+    if schedule:
+        args.update(ycfg["schedule"][schedule])
     if epochs:
         args["epochs"] = epochs
+    if patience:
+        args["patience"] = patience
+    if batch:
+        args["batch"] = batch
     weights = ycfg["smoke"]["model"] if smoke else ycfg["model"]
     model = YOLO(weights)
     model.train(**args)
-    best = Path(model.trainer.best) if getattr(model.trainer, "best", None) else None
-    ev_model = YOLO(str(best)) if best and best.exists() else model
+    # Evaluate the final-epoch weights: early stopping watches the validation fold, so picking the
+    # best epoch on that same fold would make the reported mAP optimistic.
+    last = Path(model.trainer.last) if getattr(model.trainer, "last", None) else None
+    ev_model = YOLO(str(last)) if last and last.exists() else model
+    epochs_run = int(getattr(model.trainer, "epoch", args["epochs"] - 1)) + 1
     m = ev_model.val(data=str(data), imgsz=args["imgsz"], device=args["device"],
                      plots=False, workers=0, verbose=False)
     val_list = Path(yaml.safe_load(Path(data).read_text())["val"])
@@ -202,6 +212,11 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         "data": data_key if not smoke else "smoke",
         "weights": weights,
         "epochs": args["epochs"],
+        "epochs_run": epochs_run,
+        "patience": args["patience"],
+        "batch": args["batch"],
+        "schedule": schedule or "config",
+        "weights_evaluated": "final epoch (last.pt)",
         "labels": label_provenance(),
         "seg": {"map50": float(m.seg.map50), "map50_95": float(m.seg.map)},
         "box": {"map50": float(m.box.map50), "map50_95": float(m.box.map)},
@@ -248,9 +263,9 @@ def write_status(cfg: dict | None = None) -> dict:
     out = {
         "meta": run_meta("cpu"),
         "gpu": g,
-        "trained": False,
+        "trained": (resolve(cfg["paths"]["results"]) / "phase2_yolo_all_cv.json").exists(),
         "reason": ("a CUDA-enabled PyTorch build and a GPU are required; none is usable here"
-                   if not g["torch_cuda_available"] else "GPU available: run the commands below"),
+                   if not g["torch_cuda_available"] else "GPU available"),
         "labels": prov,
         "commands": [
             "python -m mp.cli segment",

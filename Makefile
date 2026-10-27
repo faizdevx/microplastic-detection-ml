@@ -2,7 +2,7 @@ PY ?= python
 
 .PHONY: all install data audit test lint features train-cls controls train-seg-full \
 	report-phase2 sim sim-analyse train-reg report-phase3 export benchmark app \
-	paper-assets bundle release-check
+	paper-assets bundle release-check train-seg yolo-report
 
 # Whole chain from a clean clone. Never evaluates the hold-out (report-phase2 has no
 # --holdout here) and never runs the hours-long YOLO training (see train-seg-full).
@@ -34,10 +34,18 @@ train-cls:
 controls:
 	$(PY) -m mp.cli controls
 
-# GPU recommended: 150 epochs on all cross-validation images with auto masks.
+# Needs a CUDA PyTorch build. All folds, resolution-matched and cross-resolution runs and the
+# all-image run, short schedule (30 epochs, patience 10): about 4.5 hours on a 4 GB GPU.
+train-seg:
+	$(PY) -m mp.cli segment
+	$(PY) tools/run_yolo_all.py --schedule short
+	$(PY) -m mp.cli yolo-report
+
+# The configured schedule (150 epochs, patience 30): roughly 3.5 hours per run on a 4 GB GPU.
 train-seg-full:
 	$(PY) -m mp.cli segment
-	$(PY) -m mp.cli train-seg --all
+	$(PY) tools/run_yolo_all.py --schedule config --force
+	$(PY) -m mp.cli yolo-report
 
 report-phase2:
 	$(PY) -m mp.cli report-phase2

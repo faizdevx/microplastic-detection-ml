@@ -131,7 +131,8 @@ def _cmd_train_seg(args) -> int:
         return 0
     keys = ["all_cv"] if args.all else [args.data or f"fold_{args.fold}"]
     for k in keys:
-        r = yolo.train_and_eval(k, epochs=args.epochs, cfg=cfg)
+        r = yolo.train_and_eval(k, epochs=args.epochs, cfg=cfg, patience=args.patience,
+                                batch=args.batch, schedule=args.schedule)
         print(k, r["seg"], r["labels"]["description"])
     return 0
 
@@ -316,6 +317,14 @@ def _cmd_annotate_qa(args) -> int:
     return 0
 
 
+def _cmd_yolo_report(args) -> int:
+    from mp.eval import yolo_report
+
+    yolo_report.write()
+    print("results/yolo_summary.md")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -369,6 +378,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--all", action="store_true", help="train on all CV images")
     p.add_argument("--data", help="dataset key, e.g. res_matched_0, cross_a_to_b")
     p.add_argument("--epochs", type=int)
+    p.add_argument("--patience", type=int)
+    p.add_argument("--batch", type=int)
+    p.add_argument("--schedule", choices=["short"], help="budget from configs/yolo_seg.yaml")
     p.add_argument("--smoke", action="store_true", help="2 epochs, 20 images, CPU")
     p.set_defaults(func=_cmd_train_seg)
 
@@ -422,6 +434,8 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("annotate-qa", help="auto vs corrected masks: IoU, count error, missed/spurious")
     p.add_argument("coco")
     p.set_defaults(func=_cmd_annotate_qa)
+
+    sub.add_parser("yolo-report", help="summary of the YOLO runs").set_defaults(func=_cmd_yolo_report)
 
     args = ap.parse_args(argv)
     return args.func(args)
