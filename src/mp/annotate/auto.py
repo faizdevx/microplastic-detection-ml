@@ -232,3 +232,59 @@ def import_corrected(coco_path: str | Path, cfg: dict | None = None) -> dict:
     out = resolve(cfg["paths"]["results"]) / "annotation_quality.json"
     out.write_text(json.dumps(res, indent=2), encoding="utf8")
     return res
+
+
+def match_instances(auto_polys, corr_polys, h: int, w: int, thr: float = 0.5) -> dict:
+    """Greedy one-to-one matching by IoU. Missed = corrected particles with no auto match;
+    spurious = auto particles with no corrected match."""
+    a, c = _raster(auto_polys, h, w), _raster(corr_polys, h, w)
+    pairs = sorted(((float((ma & mc).sum() / max((ma | mc).sum(), 1)), i, j)
+                    for i, ma in enumerate(a) for j, mc in enumerate(c)), reverse=True)
+    used_a, used_c, ious = set(), set(), []
+    for iou, i, j in pairs:
+        if iou < thr:
+            break
+        if i in used_a or j in used_c:
+            continue
+        used_a.add(i)
+        used_c.add(j)
+        ious.append(iou)
+    return {"matched": len(ious), "matched_ious": ious, "missed": len(c) - len(used_c),
+            "spurious": len(a) - len(used_a), "n_auto": len(a), "n_corrected": len(c)}
+
+
+def qa_report(coco_path: str | Path, cfg: dict | None = None) -> dict:
+    """Auto masks against human-corrected masks: IoU, count error, missed and spurious particles."""
+    cfg = cfg or load_config()
+    coco = json.loads(Path(coco_path).read_text(encoding="utf8"))
+    by_img: dict[int, list] = {}
+    for a in coco["annotations"]:
+        by_img.setdefault(a["image_id"], []).append(a)
+    per_image, errors = [], 0
+    for im in coco["images"]:
+        cls_dir, stem = im["file_name"].split("/")[-2], Path(im["file_name"]).stem
+        w, h = im["width"], im["height"]
+        auto = [p for _, p in read_yolo_txt(ann_root() / "auto" / cls_dir / f"{stem}.txt", w, h)]
+        corr = [np.array(seg, np.float32).reshape(-1, 2) for a in by_img.get(im["id"], [])
+                for seg in a["segmentation"] if len(seg) >= 6]
+        m = match_instances(auto, corr, h, w)
+        sem = mask_iou(auto, corr, h, w)["semantic_iou"]
+        bad = m["missed"] > 0 or m["spurious"] > 0
+        errors += bad
+        per_image.append({"file": im["file_name"], "semantic_iou": sem, "n_auto": m["n_auto"],
+                          "n_corrected": m["n_corrected"], "count_error": m["n_auto"] - m["n_corrected"],
+                          "missed": m["missed"], "spurious": m["spurious"], "has_error": bool(bad)})
+    n = len(per_image)
+    res = {
+        "n_corrected_images": n,
+        "semantic_iou_mean": float(np.mean([r["semantic_iou"] for r in per_image])) if n else None,
+        "count_error_mae": float(np.mean([abs(r["count_error"]) for r in per_image])) if n else None,
+        "count_error_bias": float(np.mean([r["count_error"] for r in per_image])) if n else None,
+        "share_images_with_missed_or_spurious": float(errors / n) if n else None,
+        "missed_particles": int(sum(r["missed"] for r in per_image)),
+        "spurious_particles": int(sum(r["spurious"] for r in per_image)),
+        "per_image": per_image,
+    }
+    out = resolve(cfg["paths"]["results"]) / "annotation_quality.json"
+    out.write_text(json.dumps(res, indent=2), encoding="utf8")
+    return res

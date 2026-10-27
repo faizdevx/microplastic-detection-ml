@@ -308,6 +308,14 @@ def _cmd_paper_assets(args) -> int:
     return 0
 
 
+def _cmd_annotate_qa(args) -> int:
+    from mp.annotate import auto
+
+    r = auto.qa_report(args.coco, load_config(args.config))
+    print({k: v for k, v in r.items() if k != "per_image"})
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -410,6 +418,10 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("paper-assets", help="tables, figures and numbers.tex for the manuscript").set_defaults(
         func=_cmd_paper_assets)
+
+    p = sub.add_parser("annotate-qa", help="auto vs corrected masks: IoU, count error, missed/spurious")
+    p.add_argument("coco")
+    p.set_defaults(func=_cmd_annotate_qa)
 
     args = ap.parse_args(argv)
     return args.func(args)
