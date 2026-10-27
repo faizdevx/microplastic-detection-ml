@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this repository or dataset, please cite the paper and the dataset record."
+title: "microplastic-detection-ml"
+version: 0.2.0
+license: Apache-2.0
+repository-code: "https://github.com/faizdevx/microplastic-detection-ml"
+authors:
+  - family-names: Joshi
+    given-names: Gaurav
+  - family-names: Singh
+    given-names: Shashwat
+  - family-names: Gupta
+    given-names: Shiv Kumar
+  - family-names: Ansari
+    given-names: Faisal Arif
+  - family-names: Madhvan
+    given-names: Aviral
+  - family-names: Sharma
+    given-names: Dhirendra Kumar
+  - family-names: Shukla
+    given-names: Sweta
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21073653
+    description: "Dataset record on Zenodo"
+preferred-citation:
+  type: unpublished
+  title: "Machine Learning based algorithm for quantification and detection of different types of Microplastic in Water Sample"
+  authors:
+    - family-names: Joshi
+      given-names: Gaurav
+    - family-names: Singh
+      given-names: Shashwat
+    - family-names: Gupta
+      given-names: Shiv Kumar
+    - family-names: Ansari
+      given-names: Faisal Arif
+    - family-names: Madhvan
+      given-names: Aviral
+    - family-names: Sharma
+      given-names: Dhirendra Kumar
+    - family-names: Shukla
+      given-names: Sweta
+  year: 2026

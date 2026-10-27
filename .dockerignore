@@ -1,0 +1,7 @@
+.git
+data/raw
+data/yolo
+data/models
+__pycache__
+.pytest_cache
+*.egg-info

@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-26T19:07:06+00:00",
+    "git_commit": "76babd0b352832a01e60018d2f34dcb9d106647d",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "results": {
+    "shape": {
+      "n_features": 17,
+      "cv": {
+        "accuracy": 0.8635838150289017,
+        "balanced_accuracy": 0.8684977771095981,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.5798816568047337,
+          "balanced_accuracy": 0.5823529411764706,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.9382022471910112,
+          "balanced_accuracy": 0.7807291666666667,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.5190751445086705,
+        "balanced_accuracy": 0.5157535276304204,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    },
+    "colour_ratios": {
+      "n_features": 4,
+      "cv": {
+        "accuracy": 0.8670520231213873,
+        "balanced_accuracy": 0.8667017460965185,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.6568047337278107,
+          "balanced_accuracy": 0.6553221288515406,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.9382022471910112,
+          "balanced_accuracy": 0.7190972222222223,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.7167630057803468,
+        "balanced_accuracy": 0.7136149352462362,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    },
+    "shape+colour_ratios": {
+      "n_features": 21,
+      "cv": {
+        "accuracy": 0.9052023121387284,
+        "balanced_accuracy": 0.9061661046798823,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.7633136094674556,
+          "balanced_accuracy": 0.7627450980392156,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.9410112359550562,
+          "balanced_accuracy": 0.757638888888889,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.7121387283236994,
+        "balanced_accuracy": 0.7092765404523098,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    },
+    "normalised_intensity": {
+      "n_features": 9,
+      "cv": {
+        "accuracy": 0.953757225433526,
+        "balanced_accuracy": 0.9538616009106333,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.8047337278106509,
+          "balanced_accuracy": 0.8043417366946779,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.949438202247191,
+          "balanced_accuracy": 0.7746527777777779,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.8138728323699422,
+        "balanced_accuracy": 0.8082408023882648,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    },
+    "raw_intensity": {
+      "n_features": 11,
+      "cv": {
+        "accuracy": 0.9861271676300578,
+        "balanced_accuracy": 0.9857606151070639,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.6804733727810651,
+          "balanced_accuracy": 0.67906162464986,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.6179775280898876,
+          "balanced_accuracy": 0.7628472222222222,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.8936416184971099,
+        "balanced_accuracy": 0.889964240458753,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    },
+    "v1_local": {
+      "n_features": 13,
+      "cv": {
+        "accuracy": 0.9942196531791907,
+        "balanced_accuracy": 0.9941179313159081,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      },
+      "cross_resolution": {
+        "a_to_b": {
+          "accuracy": 0.9467455621301775,
+          "balanced_accuracy": 0.9467086834733893,
+          "n": 169,
+          "n_pvc": 84,
+          "n_nylon": 85
+        },
+        "b_to_a": {
+          "accuracy": 0.9831460674157303,
+          "balanced_accuracy": 0.9413194444444444,
+          "n": 356,
+          "n_pvc": 320,
+          "n_nylon": 36
+        }
+      },
+      "background_discs": {
+        "accuracy": 0.9364161849710982,
+        "balanced_accuracy": 0.9380516956250939,
+        "n": 865,
+        "n_pvc": 404,
+        "n_nylon": 461
+      }
+    }
+  }
+}

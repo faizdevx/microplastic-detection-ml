@@ -170,7 +170,7 @@ def test_yolo_dataset_builder_writes_fold_files(tmp_path, monkeypatch):
     out = yolo.build_datasets(pool, {"classes": ["pvc", "nylon"]})
     import yaml
 
-    hold = {l for l in (tmp_path / "data/yolo/lists/holdout.txt").read_text().split()}
+    hold = set((tmp_path / "data/yolo/lists/holdout.txt").read_text().split())
     assert hold
     for k in range(pool.n_folds):
         d = yaml.safe_load(out[f"fold_{k}"].read_text())

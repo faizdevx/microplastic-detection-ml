@@ -10,7 +10,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
-import pandas as pd  # noqa: E402
 
 from mp.config import resolve  # noqa: E402
 from mp.eval.metrics import run_meta  # noqa: E402
@@ -170,7 +169,6 @@ def _slope(cfg, rig, adc, polymer="PVC", d_med=50.0, c=1.0) -> np.ndarray:
 def geometry_sensitivity(cfg, rig) -> dict:
     adc = G.adc_settings(cfg)
     base_slope = _slope(cfg, rig, adc)
-    n_s = len(base_slope)
     sweeps = {
         "tia_Mohm": [(1.0, 1000.0), lambda r, v: replace(r, tia_ohm=v * 1e6)],
         "detector_distance_mm": [(20.0, 100.0), lambda r, v: replace(r, distance_m=v * 1e-3)],

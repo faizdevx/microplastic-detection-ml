@@ -178,7 +178,8 @@ def passes(table: dict, margin: float, chance_margin: float) -> dict:
     c2 = table["resolution_matched"]
     c3a, c3b = table["cross_resolution"]["a_to_b"], table["cross_resolution"]["b_to_a"]
     c4 = table["background_only"]
-    beats2 = c2["model"]["balanced_accuracy"] > c2["shortcut_size_and_intensity"]["balanced_accuracy"] + margin
+    short2 = c2["shortcut_size_and_intensity"]["balanced_accuracy"]
+    beats2 = c2["model"]["balanced_accuracy"] > short2 + margin
     beats3 = all(
         d["model"]["balanced_accuracy"] > d["shortcut_size_and_intensity"]["balanced_accuracy"] + margin
         for d in (c3a, c3b)

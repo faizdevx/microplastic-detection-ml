@@ -120,10 +120,11 @@ def output_path(cfg: dict, name: str = OUT_NAME):
     return resolve("data/processed") / name
 
 
-def run(cfg: dict | None = None) -> pd.DataFrame:
+def run(cfg: dict | None = None, adc_model: str | None = None) -> pd.DataFrame:
     cfg = cfg or load_scatter_config()
-    df = generate(cfg)
-    out = output_path(cfg)
+    df = generate(cfg, adc_model=adc_model)
+    name = OUT_NAME if adc_model in (None, cfg["adc"]["model"]) else f"scattering_v1_{adc_model}.csv"
+    out = output_path(cfg, name)
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(out, index=False)
     yaml.safe_dump(copy.deepcopy(cfg), open(out.with_suffix(".config.yaml"), "w", encoding="utf8"),

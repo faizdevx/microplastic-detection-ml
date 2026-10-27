@@ -10,7 +10,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import yaml
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.gaussian_process import GaussianProcessRegressor
@@ -322,7 +321,8 @@ def run_e4(model_df: pd.DataFrame, measured_df: pd.DataFrame, cfg=None):
 def run(experiment: str = "all", cfg: dict | None = None) -> dict:
     cfg = cfg or load_named("regression")
     df = load_table(cfg=cfg)
-    out = {"meta": run_meta(), "input": cfg["input"], "source_values": sorted(df["source"].unique())}
+    out = {"meta": run_meta(), "input": cfg["input"],
+           "source_column": ",".join(sorted(df["source"].unique()))}
     if experiment in ("E1", "all"):
         out["E1"] = run_e1(df, cfg)
     if experiment in ("robustness", "all"):

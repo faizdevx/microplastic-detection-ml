@@ -1,6 +1,11 @@
 PY ?= python
 
-.PHONY: install data audit test features train-cls controls train-seg report-phase2 sim sim-analyse train-reg report-phase3
+.PHONY: all install data audit test lint features train-cls controls train-seg-full \
+	report-phase2 sim sim-analyse train-reg report-phase3 export benchmark app
+
+# Whole chain from a clean clone. Never evaluates the hold-out (report-phase2 has no
+# --holdout here) and never runs the hours-long YOLO training (see train-seg-full).
+all: data audit features train-cls controls sim sim-analyse train-reg report-phase2 report-phase3
 
 install:
 	$(PY) -m pip install -e ".[dev]"
@@ -16,6 +21,9 @@ audit:
 test:
 	$(PY) -m pytest
 
+lint:
+	$(PY) -m ruff check .
+
 features:
 	$(PY) -m mp.cli features
 
@@ -25,7 +33,8 @@ train-cls:
 controls:
 	$(PY) -m mp.cli controls
 
-train-seg:
+# GPU recommended: 150 epochs on all cross-validation images with auto masks.
+train-seg-full:
 	$(PY) -m mp.cli segment
 	$(PY) -m mp.cli train-seg --all
 
@@ -43,3 +52,12 @@ train-reg:
 
 report-phase3:
 	$(PY) -m mp.cli report-phase3
+
+export:
+	$(PY) -m mp.cli export
+
+benchmark:
+	$(PY) -m mp.cli benchmark
+
+app:
+	$(PY) app/app.py

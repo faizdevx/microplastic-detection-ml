@@ -24,11 +24,18 @@ dependencies = [
     "shap>=0.45,<1",
     "ultralytics>=8.3,<9",
     "miepython>=3.0,<4",
+    "gradio>=5,<7",
+    "onnx>=1.15,<2",
+    "onnxruntime>=1.17,<2",
+    "skl2onnx>=1.16,<2",
+    "jsonschema>=4.20,<5",
+    "psutil>=5.9,<8",
     "torch>=2.2,<3",   # CPU wheel is enough for the smoke test
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8,<10"]
+dev = ["pytest>=8,<10", "ruff>=0.5"]
+pi = ["picamera2"]
 
 [project.scripts]
 mp = "mp.cli:main"
@@ -38,3 +45,10 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+extend-exclude = ["data", "results", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]

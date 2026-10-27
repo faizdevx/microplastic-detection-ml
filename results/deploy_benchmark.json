@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-26T17:56:09+00:00",
+    "git_commit": "1d8a962ff2d8478989003f0c2ef1a1488a4ca29d",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.14.0+cpu"
+  },
+  "device": {
+    "device_model": "Windows computer",
+    "is_raspberry_pi": false,
+    "cpu": "Intel64 Family 6 Model 141 Stepping 1, GenuineIntel",
+    "cpu_count": 12,
+    "ram_gb": 16.9,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.6"
+  },
+  "input": {
+    "size": "640x480 after letterbox",
+    "n_distinct_images": 10
+  },
+  "runs": 50,
+  "warmup_runs": 3,
+  "segmentation_and_features": {
+    "median_ms": 172.35244999756105,
+    "p95_ms": 274.18375001288945
+  },
+  "classification": {
+    "median_ms": 3.454250007052906,
+    "p95_ms": 5.48277000489179
+  },
+  "total": {
+    "median_ms": 176.35710000467952,
+    "p95_ms": 278.28819001297234
+  },
+  "throughput_images_per_s": 5.426226216668337,
+  "peak_rss_mb": 384.622592,
+  "libraries": {
+    "numpy": "2.5.2",
+    "sklearn": "1.9.0",
+    "cv2": "5.0.0"
+  },
+  "yolo_onnx_untrained_weights": {
+    "file": "yolo_seg_smoke.onnx",
+    "input_shape": [
+      1,
+      3,
+      640,
+      640
+    ],
+    "runs": 50,
+    "median_ms": 139.4600000057835,
+    "p95_ms": 153.2292399962898
+  }
+}

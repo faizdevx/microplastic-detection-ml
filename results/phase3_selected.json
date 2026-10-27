@@ -1,0 +1,11 @@
+{
+  "model": "lasso",
+  "geometry": "g0",
+  "adc_model": "mcp3008",
+  "e1_r2": 0.8071648131949254,
+  "e1_r2_ci95": [
+    0.6265096452385427,
+    0.8583320653493008
+  ],
+  "rule": "highest R2 in E1, concentration-level grouped CV"
+}
