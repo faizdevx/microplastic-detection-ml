@@ -1,8 +1,6 @@
 import hashlib
 import importlib.util
 
-import pytest
-
 from mp.config import repo_root
 
 _spec = importlib.util.spec_from_file_location("cve", repo_root() / "tools" / "claims_vs_evidence.py")
@@ -56,8 +54,3 @@ def test_every_claim_has_a_known_status():
 
     mp = yaml.safe_load(cve.MAP.read_text(encoding="utf8"))
     assert claims and all(mp["claims"][c["id"]]["status"] in cve.STATUSES for c in claims)
-
-
-@pytest.mark.parametrize("word", ["Co-Authored", "Generated with"])
-def test_output_has_no_attribution_strings(word):
-    assert word not in cve.OUT.read_text(encoding="utf8") if cve.OUT.exists() else True

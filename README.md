@@ -46,6 +46,7 @@ cd microplastic-detection-ml
 pip install -e ".[dev]"
 
 make all           # data, audit, features, classifier, controls, scattering model, regression
+make release-check  # lint, tests, claims audit, claims against evidence
 python app/app.py  # local demo at http://127.0.0.1:7860
 pytest
 ```
@@ -460,6 +461,28 @@ single scattering; multiple scattering only matters well above it.
 Detection limits at the default rig values (3.3σ/slope and 10σ/slope, σ at 0.1 mg/L, S1):
 mcp3008: LOD 0.43 mg/L, LOQ 1.31 mg/L; ads1115: LOD 0.43 mg/L, LOQ 1.30 mg/L. They depend on the unmeasured rig parameters; the most influential are
 tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`).
+
+---
+
+# How the Numbers Were Checked
+
+- **Controls instead of one accuracy.** Every polymer result is reported next to controls that
+  test whether acquisition, not particles, drives it: resolution-matched and cross-resolution
+  splits, a label-permutation test, background discs, and probes for exposure and resolution
+  (`MODEL_CARD.md`, `results/phase5_summary.md`).
+- **One hold-out, used once.** The hold-out set was evaluated a single time
+  (`results/phase2_holdout.json`); later work used cross-validation only.
+- **Claims audit.** `python tools/claims_audit.py` checks that every decimal number in the
+  README and the cards appears in a generated results file, that the word marking model output
+  appears only where allowed, that no attribution strings are present, and that no mAP is quoted
+  without trained-model results. Result: `results/claims_audit.md`.
+- **Manuscript claims against evidence.** `python tools/claims_vs_evidence.py` compares the
+  quantitative statements in `Reviewer_Response.docx` with the repository and lists the
+  discrepancies: `docs/claims_vs_evidence.md`.
+- **Release check.** `make release-check` runs lint, tests, both audits, the output schema of
+  `mp analyse` and the file checklist: `results/release_check.md`.
+- **Paper assets.** `make paper-assets` writes the tables, figures and `numbers.tex` from the
+  results files only; a test compares every named number with its source.
 
 ---
 

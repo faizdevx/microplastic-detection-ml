@@ -21,6 +21,8 @@ cross-validated comparison: lasso (R² 0.81).
 
 **Robustness of polymer identification.** Three variants were compared with the baseline on the same controls, using the cross-validation images only: local normalisation, exposure randomisation and a patch network. None improves on both the cross-resolution and the background-disc control (`results/phase5_summary.md`); the baseline stays the default. Shape features alone reach CV accuracy 0.864 with background discs at chance. YOLOv11 training was not run: a CUDA-enabled PyTorch build and a GPU are required; none is usable here.
 
+**Release preparation.** A table of the quantitative statements in the response to reviewers with the matching evidence in the repository (`docs/claims_vs_evidence.md`), generated tables, figures and named numbers for the manuscript (`make paper-assets`), a staged bundle with checksums for a new dataset version (`make bundle`), an acquisition protocol, an annotation quality command (`mp annotate-qa`) and a release check (`make release-check`).
+
 **Tooling.** `mp analyse` for an image and/or four detector counts (JSON schema in
 `docs/analyse.schema.json`), ONNX export, a benchmark script, a Gradio demo, hardware notes,
 continuous integration, a Dockerfile and a claims-audit script.

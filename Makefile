@@ -1,7 +1,8 @@
 PY ?= python
 
 .PHONY: all install data audit test lint features train-cls controls train-seg-full \
-	report-phase2 sim sim-analyse train-reg report-phase3 export benchmark app
+	report-phase2 sim sim-analyse train-reg report-phase3 export benchmark app \
+	paper-assets bundle release-check
 
 # Whole chain from a clean clone. Never evaluates the hold-out (report-phase2 has no
 # --holdout here) and never runs the hours-long YOLO training (see train-seg-full).
@@ -61,3 +62,12 @@ benchmark:
 
 app:
 	$(PY) app/app.py
+
+paper-assets:
+	$(PY) -m mp.cli paper-assets
+
+bundle:
+	$(PY) tools/make_bundle.py
+
+release-check:
+	$(PY) tools/release_check.py

@@ -29,6 +29,8 @@ jobs:
         run: python -m pytest -q
       - name: Claims audit
         run: python tools/claims_audit.py
+      - name: Release check
+        run: python tools/release_check.py --allow-dirty
 
   yolo-smoke:
     runs-on: ubuntu-latest
