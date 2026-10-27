@@ -9,7 +9,7 @@ Checked 288 items; 0 violation(s).
 Checked 8 items; 0 violation(s).
 
 ## No attribution strings in files or history
-Checked 131 items; 0 violation(s).
+Checked 132 items; 0 violation(s).
 
 ## No YOLO mAP numbers without trained-model results
 Checked 0 items; 0 violation(s).

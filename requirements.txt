@@ -21,4 +21,5 @@ onnxruntime>=1.17,<2
 skl2onnx>=1.16,<2
 jsonschema>=4.20,<5
 psutil>=5.9,<8
+python-docx>=1.1,<2
 torch>=2.2,<3
