@@ -122,6 +122,22 @@ The two hold-out errors (Nylon predicted as PVC):
 |---|---|
 | ![error 1](results/figures/phase2_failures/01_nylon_0394.png) | ![error 2](results/figures/phase2_failures/02_nylon_0395.png) |
 
+### Confound controls
+
+| Variants under each control | Feature sets under the background-discs control |
+|---|---|
+| ![controls by variant](results/figures/controls_by_variant.png) | ![feature sets](results/figures/feature_sets.png) |
+
+Cross-validation accuracy stays high while the cross-resolution and background-disc controls
+drop, so part of the accuracy comes from acquisition cues (`results/phase5_summary.md`).
+
+### YOLOv11 instance segmentation
+
+![YOLO per fold](results/figures/yolo_folds.png)
+
+Mask mAP50 is agreement with the automatic masks, not with human-drawn outlines, and the
+image decision varies between folds (`results/yolo_summary.md`).
+
 ### Concentration estimation (rig model)
 
 | Angular scattering | Signal vs concentration |
