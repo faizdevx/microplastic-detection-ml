@@ -298,6 +298,16 @@ def _cmd_yolo_status(args) -> int:
     return 0
 
 
+def _cmd_paper_assets(args) -> int:
+    import warnings
+
+    warnings.filterwarnings("ignore")
+    from mp.paper import assets
+
+    print(assets.run())
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="mp")
     ap.add_argument("--config", default=None, help="path to data.yaml")
@@ -397,6 +407,9 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("yolo-status", help="record whether YOLO training is possible here").set_defaults(
         func=_cmd_yolo_status)
+
+    sub.add_parser("paper-assets", help="tables, figures and numbers.tex for the manuscript").set_defaults(
+        func=_cmd_paper_assets)
 
     args = ap.parse_args(argv)
     return args.func(args)
