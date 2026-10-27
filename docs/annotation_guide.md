@@ -52,3 +52,32 @@ auto-label quality and counting error, never to train.
   share of corrected particles the auto mask found with IoU ≥ 0.5.
 - If a second person corrects 10 % of the same images, report their mutual IoU as the
   inter-annotator agreement.
+
+## Inter-annotator agreement
+
+Two people correct the same 10 % of the exported images independently (separate COCO files).
+Compare them with the same tool, using one person's file as the reference:
+
+```bash
+python -m mp.cli annotate-import annotator_a.json     # YOLO labels for annotator A
+python -m mp.cli annotate-qa annotator_b.json         # auto masks vs annotator B
+```
+
+For agreement between the two people, convert one of them to the "auto" slot by copying their
+YOLO txt files to `data/annotations/auto/` in a scratch checkout, then run `annotate-qa` with
+the other file; the semantic IoU and the missed/spurious counts are then the agreement between
+the annotators.
+
+## Quality check commands
+
+```bash
+python -m mp.cli annotate-export                 # COCO set with the auto masks
+# ... correct in CVAT or Label Studio, export COCO 1.0 ...
+python -m mp.cli annotate-import corrected.json  # YOLO labels, semantic and instance IoU
+python -m mp.cli annotate-qa corrected.json      # per image IoU, count error, missed, spurious
+```
+
+`annotate-qa` writes `results/annotation_quality.json`: mean semantic IoU, mean absolute and
+signed count error per image, the share of images with at least one missed or spurious
+particle (instances are matched one to one at IoU 0.5), and one row per image.
+Until a corrected file is imported, no number about mask quality exists.

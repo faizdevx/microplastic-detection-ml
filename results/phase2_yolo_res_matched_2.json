@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-10-27T06:39:03+00:00",
+    "git_commit": "651c209d6691abcbc683e6fc8ecfd52dee96d3cf",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "0",
+    "torch": "2.11.0+cu128"
+  },
+  "data": "res_matched_2",
+  "weights": "yolo11s-seg.pt",
+  "epochs": 30,
+  "epochs_run": 26,
+  "patience": 10,
+  "batch": 6,
+  "schedule": "short",
+  "weights_evaluated": "final epoch (last.pt)",
+  "labels": {
+    "corrected": 0,
+    "auto": 1020,
+    "description": "trained on auto-generated masks (uncorrected)"
+  },
+  "seg": {
+    "map50": 0.7233419545527682,
+    "map50_95": 0.3003478691342618
+  },
+  "box": {
+    "map50": 0.8376052817011556,
+    "map50_95": 0.4836164418503941
+  },
+  "per_class_seg": {
+    "pvc": {
+      "precision": 0.7508390155393115,
+      "recall": 0.7060567671071055
+    },
+    "nylon": {
+      "precision": 0.7493423817598986,
+      "recall": 0.6058052434456929
+    }
+  },
+  "image_level": {
+    "n": 109,
+    "accuracy": 0.981651376146789,
+    "balanced_accuracy": 0.9642857142857143,
+    "macro_f1": 0.9753839205058716,
+    "per_class": {
+      "PVC": {
+        "precision": 0.9759036144578314,
+        "recall": 1.0,
+        "f1": 0.9878048780487805
+      },
+      "NYLON": {
+        "precision": 1.0,
+        "recall": 0.9285714285714286,
+        "f1": 0.9629629629629629
+      }
+    },
+    "confusion_matrix": [
+      [
+        81,
+        0
+      ],
+      [
+        2,
+        26
+      ]
+    ],
+    "ece": 0.02656347154203896,
+    "roc_auc": 1.0
+  },
+  "n_val_images": 109,
+  "n_val_no_prediction": 0,
+  "counting_error": null,
+  "counting_error_note": "needs human-corrected masks; none imported"
+}

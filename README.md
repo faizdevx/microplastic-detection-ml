@@ -31,7 +31,7 @@ The system aims to detect and quantify microplastic particles ranging from **10�
 |---|---|---|
 | Image dataset audit | Done | 2040 files are 600 near-duplicate groups; every split is made by group (`DATASET_CARD.md`) |
 | Polymer identification (per-particle classifier) | Done, with a caveat | CV accuracy 0.976, hold-out 0.987 (95 % CI 0.952 to 1.000). A model that sees only the particle-free background still reaches 0.906 balanced accuracy, so part of the signal is acquisition, not polymer (`MODEL_CARD.md`) Phase 5: shape features alone reach CV accuracy 0.864 with background discs at chance (0.516); every pixel-based feature set also separates the classes on background discs (0.709 to 0.938), and none of the three tested variants improves on both controls |
-| YOLOv11 instance segmentation | Pipeline only | Implemented, smoke-tested and exported to ONNX with untrained weights; no trained model, no mAP. Masks are automatic and uncorrected. `results/phase5_yolo_status.json`: a GPU is detected but PyTorch is the CPU build, so training was not run |
+| YOLOv11 instance segmentation | Trained, on automatic masks | 30-epoch budget with patience 10, batch 6, final-epoch weights on an RTX 3050; mask mAP50 0.739 ± 0.019 and mask mAP50-95 0.321 ± 0.013 over five folds, measured against the classical segmentation's masks (no human-corrected masks exist); image accuracy 0.887 ± 0.121 (`results/yolo_summary.md`) |
 | Concentration estimation | Rig model only | No measured scattering data exist. The results come from a simulator of the rig (see below); best model lasso, R² 0.81 |
 | Hardware | Not built or measured as described | Detector angles, distances, amplifier gain, laser power and ADC are placeholders (`docs/hardware/`) |
 | Pixel size (µm per pixel) | Not calibrated | Sizes are reported in pixels |
@@ -46,6 +46,7 @@ cd microplastic-detection-ml
 pip install -e ".[dev]"
 
 make all           # data, audit, features, classifier, controls, scattering model, regression
+make release-check  # lint, tests, claims audit, claims against evidence
 python app/app.py  # local demo at http://127.0.0.1:7860
 pytest
 ```
@@ -318,10 +319,7 @@ Two classifiers are implemented, both split by near-duplicate **group** using
 1. **Baseline A (reported below):** per-particle classical features, background-corrected
    Nile Red channel, Otsu + watershed segmentation, logistic regression / random forest /
    histogram gradient boosting, aggregated to one prediction per image.
-2. **YOLOv11-seg (`configs/yolo_seg.yaml`):** implemented and smoke-tested only
-   (`python -m mp.cli train-seg --smoke`). The full per-fold training has not been run, so
-   no mAP is reported. Masks are auto-generated and uncorrected until `annotate-import`
-   is used (see `docs/annotation_guide.md`).
+2. **YOLOv11-seg (`configs/yolo_seg.yaml`):** trained with `python tools/run_yolo_all.py` (30-epoch budget with patience 10, batch 6, final-epoch weights); results in `results/yolo_summary.md`. Masks are the classical segmentation's output, so the model imitates it; correct masks with `annotate-import` (see `docs/annotation_guide.md`) to measure against human outlines.
 
 Classes: PVC, Nylon.
 
@@ -427,7 +425,7 @@ Confusion matrix (rows true PVC/NYLON): [[74, 0], [2, 79]]; ECE 0.125; 155 image
   640×480 and tested on 1280×960 (0.864
   vs 0.506
   balanced accuracy), so part of the signal is genuinely in the particles.
-- YOLOv11-seg is not evaluated; no mAP is claimed.
+- YOLOv11-seg: mask mAP50 0.739 ± 0.019 against automatic masks; its image-level cross-resolution balanced accuracy (0.970 and 0.875) is higher than the per-particle classifier's (0.864 and 0.762), but the network sees the background and no background control was run for it.
 
 **Figures** (generated):
 
@@ -463,6 +461,28 @@ tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`)
 
 ---
 
+# How the Numbers Were Checked
+
+- **Controls instead of one accuracy.** Every polymer result is reported next to controls that
+  test whether acquisition, not particles, drives it: resolution-matched and cross-resolution
+  splits, a label-permutation test, background discs, and probes for exposure and resolution
+  (`MODEL_CARD.md`, `results/phase5_summary.md`).
+- **One hold-out, used once.** The hold-out set was evaluated a single time
+  (`results/phase2_holdout.json`); later work used cross-validation only.
+- **Claims audit.** `python tools/claims_audit.py` checks that every decimal number in the
+  README and the cards appears in a generated results file, that the word marking model output
+  appears only where allowed, that no attribution strings are present, and that no mAP is quoted
+  without trained-model results. Result: `results/claims_audit.md`.
+- **Manuscript claims against evidence.** `python tools/claims_vs_evidence.py` compares the
+  quantitative statements in `Reviewer_Response.docx` with the repository and lists the
+  discrepancies: `docs/claims_vs_evidence.md`.
+- **Release check.** `make release-check` runs lint, tests, both audits, the output schema of
+  `mp analyse` and the file checklist: `results/release_check.md`.
+- **Paper assets.** `make paper-assets` writes the tables, figures and `numbers.tex` from the
+  results files only; a test compares every named number with its source.
+
+---
+
 # Limitations
 
 - The polymer classifier partly reads acquisition (background, exposure, image size), not only
@@ -470,7 +490,7 @@ tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`)
   laboratory powders, one optical setup.
 - The 2040 image files are 600 near-duplicate groups, so the effective sample size is much smaller
   than the file count.
-- YOLOv11 segmentation is not trained and the particle masks are automatic and uncorrected.
+- The YOLOv11 masks used for training and scoring are automatic and uncorrected, and the training budget was short.
 - The concentration numbers describe a model of the rig with unmeasured parameters, not an instrument.
   Particle-number noise limits accuracy at 0.1-10 mg/L, and the model assumes spherical, non-absorbing,
   single-polymer particles.

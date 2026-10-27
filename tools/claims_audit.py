@@ -34,7 +34,8 @@ def git(*args: str) -> str:
 
 
 def tracked() -> list[str]:
-    return [f for f in git("ls-files").splitlines() if f != SELF]
+    skip = {SELF, "results/claims_audit.md", "results/release_check.md"}  # they quote violations
+    return [f for f in git("ls-files").splitlines() if f not in skip]
 
 
 def read(rel: str) -> str | None:

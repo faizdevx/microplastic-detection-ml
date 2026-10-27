@@ -12,14 +12,16 @@ The archive holds 2040 files that form 600 near-duplicate groups.
 **Polymer identification.** Per-particle classical classifier with group-aware
 cross-validation (pooled accuracy 0.976), confound controls, an
 explainability report, and a single hold-out evaluation (accuracy 0.987).
-The YOLOv11 segmentation pipeline is implemented and smoke-tested; it has not been trained.
+YOLOv11 segmentation was trained on a GPU with 30-epoch budget with patience 10, batch 6, final-epoch weights (mask mAP50 0.739 ± 0.019 over five folds, automatic masks as labels; `results/yolo_summary.md`).
 
 **Concentration estimation.** A multi-angle scattering model of the rig (Mie theory, photon
 Monte Carlo, photodiode and ADC chain), a regression pipeline with split-conformal intervals,
 and analyses of linearity, geometry sensitivity and detection limits. Best model in the
 cross-validated comparison: lasso (R² 0.81).
 
-**Robustness of polymer identification.** Three variants were compared with the baseline on the same controls, using the cross-validation images only: local normalisation, exposure randomisation and a patch network. None improves on both the cross-resolution and the background-disc control (`results/phase5_summary.md`); the baseline stays the default. Shape features alone reach CV accuracy 0.864 with background discs at chance. YOLOv11 training was not run: a CUDA-enabled PyTorch build and a GPU are required; none is usable here.
+**Robustness of polymer identification.** Three variants were compared with the baseline on the same controls, using the cross-validation images only: local normalisation, exposure randomisation and a patch network. None improves on both the cross-resolution and the background-disc control (`results/phase5_summary.md`); the baseline stays the default. Shape features alone reach CV accuracy 0.864 with background discs at chance. YOLOv11 training is reported in `results/yolo_summary.md`.
+
+**Release preparation.** A table of the quantitative statements in the response to reviewers with the matching evidence in the repository (`docs/claims_vs_evidence.md`), generated tables, figures and named numbers for the manuscript (`make paper-assets`), a staged bundle with checksums for a new dataset version (`make bundle`), an acquisition protocol, an annotation quality command (`mp annotate-qa`) and a release check (`make release-check`).
 
 **Tooling.** `mp analyse` for an image and/or four detector counts (JSON schema in
 `docs/analyse.schema.json`), ONNX export, a benchmark script, a Gradio demo, hardware notes,
@@ -33,7 +35,7 @@ make all          # data, audit, features, classifier, controls, scattering mode
 python app/app.py
 ```
 
-`make all` does not evaluate the hold-out and does not train YOLOv11-seg
+`make all` does not evaluate the hold-out and does not train YOLOv11-seg (`make train-seg` does, in about 4.5 hours on a 4 GB GPU with the short schedule)
 (`make train-seg-full`, GPU recommended).
 
 ## Known limits (from MODEL_CARD.md)
@@ -51,8 +53,7 @@ python app/app.py
 - Probabilities are not well calibrated (ECE 0.125).
 
 ### Not evaluated
-- **YOLOv11-seg:** only a CPU smoke test was run (2 epochs, 10 images; the metrics of that run are not a result). No per-fold training, no mAP, no
-  McNemar comparison, no counting error. This environment has CPU-only PyTorch.
+- **YOLOv11-seg against human-drawn masks:** not available; no corrected masks exist.
 - **Human-corrected masks:** none imported; masks are auto-generated.
 - **Pixel calibration:** none.
 

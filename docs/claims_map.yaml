@@ -1,0 +1,241 @@
+# Hand-written map from claims in Reviewer_Response.docx (paragraph id pNN, or tNrM for table
+# rows) to evidence in this repository. tools/claims_vs_evidence.py checks every reference.
+#
+# ref syntax:  path/to/file.json::dotted.key[0].name        value of a key in a JSON file
+#              csv_rows:path.csv                            number of data rows in a CSV
+#              csv_class:path.csv:column:value              rows with column == value
+#              grep:path::pattern                           number of regex matches in a text file
+# status:      supported | contradicted | not reproducible here | different protocol | consistent
+#              (consistent = qualitative statement that matches the repository; no number to check)
+# `supported` needs claim_numbers, and each must equal an evidence value at the claim's printed
+# precision (a percentage may match a fraction).
+
+facts:
+  files: {ref: "results/data_audit.json::n_images"}
+  groups_pvc: {ref: "results/data_audit.json::per_class.PVC.unique_groups"}
+  groups_nylon: {ref: "results/data_audit.json::per_class.NYLON.unique_groups"}
+  exact_dup_pvc: {ref: "results/data_audit.json::per_class.PVC.exact_duplicate_files"}
+  exact_dup_nylon: {ref: "results/data_audit.json::per_class.NYLON.exact_duplicate_files"}
+  holdout_images: {ref: "results/phase2_holdout.json::n_holdout_images"}
+  holdout_acc: {ref: "results/phase2_holdout.json::metrics.accuracy"}
+  cv_acc: {ref: "results/phase2_cv.json::geometries.resample.hist_gb.image_level.accuracy"}
+  bg_discs: {ref: "results/phase5_variants.json::results.baseline.pseudo_particles.balanced_accuracy"}
+  e1_lasso_r2: {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.lasso.r2"}
+  e1_svr_r2: {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.r2"}
+  e1_rf_r2: {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.random_forest.r2"}
+
+claims:
+  p7:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase3_selected.json::model", label: "regression model selected by the repository rule"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.r2", label: "SVR (RBF) R2, rig-model table"}
+    note: "SVR is one of seven models evaluated; the repository selects by highest R2 in concentration-level cross-validation. The data are different (rig-model table, not final_dataset.csv)."
+  p8:
+    status: consistent
+    evidence:
+      - {ref: "results/phase2_cv.json::selected.model", label: "polymer classifier: per-particle morphological, colour and intensity features"}
+    note: "The classifier is feature-based, per particle, aggregated per image."
+  p13:
+    status: supported
+    claim_numbers: [5]
+    evidence:
+      - {ref: "data/processed/splits.json::meta.n_folds", label: "cross-validation folds"}
+    note: "Five folds, stratified and grouped by near-duplicate group; an additional group-level hold-out is kept apart."
+  t1r1:
+    status: different protocol
+    claim_numbers: [0.78, 0.90]
+    evidence:
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.lasso.r2", label: "Lasso R2 (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.lasso.mae", label: "Lasso MAE (rig-model table)"}
+    note: "The quoted values come from final_dataset.csv, which has no documented origin and is not used in this repository."
+  t1r2:
+    status: different protocol
+    claim_numbers: [0.84, 0.60]
+    evidence:
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.random_forest.r2", label: "Random forest R2 (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.random_forest.mae", label: "Random forest MAE (rig-model table)"}
+    note: "Different data; the repository cannot reproduce the quoted values."
+  t1r3:
+    status: different protocol
+    claim_numbers: [0.84, 0.60]
+    evidence:
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.r2", label: "SVR R2 (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.mae", label: "SVR MAE (rig-model table)"}
+    note: "Different data; random forest and SVR have identical R2 and MAE in the quoted table."
+  p15:
+    status: not reproducible here
+    evidence:
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.lasso.mae", label: "Lasso MAE (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.mae", label: "SVR MAE (rig-model table)"}
+    note: "A reduction of MAE from 0.90 to 0.60 follows from the quoted table, but on the repository's own table the SVR error is not lower than the Lasso error."
+  p17:
+    status: not reproducible here
+    evidence:
+      - {ref: "results/phase2_cv.json::geometries.resample.hist_gb.fold_mean", label: "fold-mean accuracy, group-aware, selected model"}
+      - {ref: "results/phase2_cv.json::geometries.resample.hist_gb.fold_std", label: "fold standard deviation"}
+    note: "The repository's fold accuracy is group-aware and on de-duplicated images; the quoted protocol and data are not documented."
+  p18:
+    status: different protocol
+    claim_numbers: [0.988]
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.macro_f1", label: "hold-out macro-F1"}
+      - {ref: "results/phase2_holdout.json::n_holdout_images", label: "hold-out images"}
+    note: "Different hold-out set (group-level hold-out of the unique images)."
+  p25:
+    status: contradicted
+    claim_numbers: [2000]
+    evidence:
+      - {ref: "csv_rows:final_dataset.csv", label: "rows in final_dataset.csv"}
+      - {ref: "results/data_audit.json::n_images", label: "image files in the archive"}
+      - {ref: "results/data_audit.json::per_class.PVC.unique_groups", label: "near-duplicate groups, PVC"}
+      - {ref: "results/data_audit.json::per_class.NYLON.unique_groups", label: "near-duplicate groups, Nylon"}
+    note: "The CSV has that many rows, but they are not unique particle records: the image archive holds far fewer independent images, and the CSV rows have non-integer particle counts."
+  p26:
+    status: supported
+    claim_numbers: [1000]
+    evidence:
+      - {ref: "csv_class:final_dataset.csv:polymer:NYLON", label: "NYLON rows in final_dataset.csv"}
+    note: "Row count only; see p25 for what the rows are."
+  p27:
+    status: supported
+    claim_numbers: [1000]
+    evidence:
+      - {ref: "csv_class:final_dataset.csv:polymer:PVC", label: "PVC rows in final_dataset.csv"}
+    note: "Row count only; see p25."
+  p29:
+    status: different protocol
+    evidence:
+      - {ref: "data/processed/splits.json::meta.holdout_fraction_groups", label: "hold-out fraction of groups"}
+    note: "The repository uses a 15 % group-level hold-out plus five grouped folds, not an 80:20 split."
+  p30:
+    status: supported
+    claim_numbers: [5]
+    evidence:
+      - {ref: "data/processed/splits.json::meta.n_folds", label: "cross-validation folds"}
+    note: "Grouped by near-duplicate group."
+  p38:
+    status: different protocol
+    claim_numbers: [198, 200]
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.confusion_matrix", label: "hold-out confusion matrix (rows PVC, Nylon)"}
+    note: "A different, smaller hold-out set (unique images)."
+  p39:
+    status: different protocol
+    claim_numbers: [197, 200]
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.confusion_matrix", label: "hold-out confusion matrix (rows PVC, Nylon)"}
+    note: "A different, smaller hold-out set (unique images)."
+  p41:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.per_class.PVC.precision", label: "PVC precision"}
+      - {ref: "results/phase2_holdout.json::metrics.per_class.NYLON.precision", label: "Nylon precision"}
+    note: "Different hold-out set."
+  p42:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.per_class.PVC.recall", label: "PVC recall"}
+      - {ref: "results/phase2_holdout.json::metrics.per_class.NYLON.recall", label: "Nylon recall"}
+    note: "Different hold-out set."
+  p43:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.per_class.PVC.f1", label: "PVC F1"}
+      - {ref: "results/phase2_holdout.json::metrics.per_class.NYLON.f1", label: "Nylon F1"}
+    note: "Different hold-out set."
+  p44:
+    status: different protocol
+    claim_numbers: [98.75]
+    evidence:
+      - {ref: "results/phase2_holdout.json::metrics.accuracy", label: "hold-out accuracy"}
+      - {ref: "results/phase2_holdout.json::n_holdout_images", label: "hold-out images"}
+    note: "The quoted accuracy is consistent with 395 of 400 records; the repository's hold-out has a different size and gives a different value."
+  p46:
+    status: consistent
+    evidence:
+      - {ref: "results/phase5_yolo_status.json::trained", label: "YOLOv11-seg trained (false = no mAP exists)"}
+    note: "The evaluated classifier is feature-based, so mAP does not apply to it. The segmentation pipeline exists but is untrained, so no mAP is reported."
+  p48:
+    status: contradicted
+    evidence:
+      - {ref: "grep:notebooks/00_legacy_exploration.ipynb::train_test_split", label: "random train_test_split calls in the public notebook"}
+      - {ref: "grep:notebooks/00_legacy_exploration.ipynb::GroupKFold", label: "group-aware splitters in the public notebook"}
+      - {ref: "results/data_audit.json::n_images", label: "image files in the archive"}
+      - {ref: "results/data_audit.json::per_class.PVC.unique_groups", label: "near-duplicate groups, PVC"}
+      - {ref: "results/data_audit.json::per_class.NYLON.unique_groups", label: "near-duplicate groups, Nylon"}
+    note: "The notebook that was published with the data splits randomly and has no group-aware splitter, while most images are near-duplicates of each other. The repository's own splits are group-level."
+  p55:
+    status: supported
+    claim_numbers: [1000]
+    evidence:
+      - {ref: "csv_class:final_dataset.csv:polymer:NYLON", label: "NYLON rows"}
+      - {ref: "csv_class:final_dataset.csv:polymer:PVC", label: "PVC rows"}
+    note: "The file is in the repository. Its origin is undocumented and no result here uses it."
+  p67:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_explain.json::permutation_importance[0].feature", label: "top permutation-importance feature (group-aware CV)"}
+      - {ref: "results/phase2_explain.json::permutation_importance[1].feature", label: "second feature"}
+    note: "The public notebook ranks mean_particle_area, green_std, max_particle_area first on random folds; under group-aware folds the ranking is led by intensity features."
+  p90:
+    status: not reproducible here
+    evidence:
+      - {ref: "results/phase2_cv.json::geometries.resample.hist_gb.fold_mean", label: "fold-mean accuracy, group-aware"}
+    note: "Same as p17."
+  p92:
+    status: contradicted
+    claim_numbers: [2000]
+    evidence:
+      - {ref: "csv_rows:final_dataset.csv", label: "rows in final_dataset.csv"}
+      - {ref: "results/data_audit.json::per_class.PVC.unique_groups", label: "near-duplicate groups, PVC"}
+      - {ref: "results/data_audit.json::per_class.NYLON.unique_groups", label: "near-duplicate groups, Nylon"}
+    note: "Same as p25."
+  p68:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_explain.json::permutation_importance[2].feature", label: "third permutation-importance feature (group-aware CV)"}
+    note: "See p67."
+  p69:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase2_explain.json::permutation_importance[3].feature", label: "fourth permutation-importance feature (group-aware CV)"}
+    note: "See p67."
+  p89:
+    status: supported
+    claim_numbers: [5]
+    evidence:
+      - {ref: "data/processed/splits.json::meta.n_folds", label: "cross-validation folds"}
+    note: "Five folds, grouped by near-duplicate group."
+  p91:
+    status: not reproducible here
+    evidence:
+      - {ref: "results/phase2_cv.json::geometries.resample.hist_gb.fold_std", label: "fold standard deviation, group-aware"}
+    note: "The quoted variance belongs to a protocol and data set the repository cannot reproduce; folds that contain near-duplicates of their training data understate variance."
+  p101:
+    status: supported
+    claim_numbers: [5]
+    evidence:
+      - {ref: "data/processed/splits.json::meta.n_folds", label: "cross-validation folds"}
+    note: "The repository compares seven regression models with grouped five-fold cross-validation on its own table."
+  p102:
+    status: not reproducible here
+    evidence:
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.random_forest.mae", label: "random forest MAE (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.svr_rbf.mae", label: "SVR MAE (rig-model table)"}
+      - {ref: "results/phase3_regression.json::E1.schemes.by_concentration_level.lasso.mae", label: "Lasso MAE (rig-model table)"}
+    note: "On the repository's table neither non-linear model has a lower MAE than Lasso."
+  p103:
+    status: different protocol
+    evidence:
+      - {ref: "results/phase3_selected.json::model", label: "regression model selected by the repository rule"}
+    note: "Selection by highest R2 in concentration-level cross-validation picks a different model on the repository's data."
+
+discrepancies:
+  - "Data counts: the response states 2,000 unique particle records. The image archive holds {files} files that form {groups_pvc} PVC and {groups_nylon} Nylon near-duplicate groups ({exact_dup_pvc} and {exact_dup_nylon} files are byte-identical copies), and the CSV rows have non-integer particle counts."
+  - "Split protocol: the response describes partitioning by independent source image. The public notebook splits randomly, and its random folds put near-duplicates on both sides."
+  - "Reported accuracy: 98.45 % +/- 0.53 % and 98.75 % hold-out come from a protocol and data set that the repository cannot reproduce. Group-aware cross-validation gives a fold mean of {cv_acc} and the group-level hold-out gives {holdout_acc} on {holdout_images} images."
+  - "Background and exposure: a classifier trained only on particle-free background discs reaches a balanced accuracy of {bg_discs}, so part of any reported accuracy is not polymer information."
+  - "Regression table: R2 0.78/0.84/0.84 and MAE 0.90/0.60/0.60 are computed on final_dataset.csv, whose origin is undocumented. Random forest and SVR have identical entries, and the repository's own table gives different values ({e1_lasso_r2}, {e1_rf_r2} and {e1_svr_r2} for Lasso, random forest and SVR)."
+  - "Model choice: SVR is stated as the final regressor; the repository's selection rule picks a different model on its table."
+  - "Metric definitions: hold-out F1, precision and recall are quoted as ranges over classes; the repository reports macro-F1 and per-class values on a different hold-out set."

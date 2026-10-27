@@ -1,23 +1,23 @@
 {
   "meta": {
-    "timestamp_utc": "2026-10-26T18:31:42+00:00",
-    "git_commit": "76babd0b352832a01e60018d2f34dcb9d106647d",
+    "timestamp_utc": "2026-10-27T07:38:39+00:00",
+    "git_commit": "651c209d6691abcbc683e6fc8ecfd52dee96d3cf",
     "python": "3.14.6",
     "numpy": "2.5.2",
     "pandas": "3.0.6",
     "sklearn": "1.9.0",
     "device": "cpu",
-    "torch": "2.14.0+cpu"
+    "torch": "2.11.0+cu128"
   },
   "gpu": {
-    "torch_cuda_available": false,
-    "torch_build": "2.14.0+cpu",
+    "torch_cuda_available": true,
+    "torch_build": "2.11.0+cu128",
     "nvidia_gpus_detected": [
       "NVIDIA GeForce RTX 3050 Laptop GPU"
     ]
   },
-  "trained": false,
-  "reason": "a CUDA-enabled PyTorch build and a GPU are required; none is usable here",
+  "trained": true,
+  "reason": "GPU available",
   "labels": {
     "corrected": 0,
     "auto": 1020,

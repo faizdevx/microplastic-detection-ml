@@ -11,3 +11,9 @@ data/processed/*
 !data/processed/groups.csv
 data/models/
 results/zenodo_checksums.json
+paper_assets/*
+!paper_assets/MANIFEST.md
+release_bundle/
+runs/
+runs/
+*.pt

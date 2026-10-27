@@ -9,8 +9,8 @@ patience: 30
 optimizer: AdamW
 lr0: 0.001
 deterministic: true
-batch: 16
-workers: 4
+batch: 6                 # 4 GB GPU: batch 16 spills to shared memory (6x slower), batch 8 runs out of memory in validation
+workers: 2                # this machine: 16 GB RAM shared with other programs; 4 workers hit MemoryError
 
 augment:
   hsv_h: 0.01
@@ -31,3 +31,8 @@ smoke:
   imgsz: 320
   n_images: 20
   batch: 4
+
+# Shorter budget for a single 4 GB laptop GPU (about 1.5 min per epoch at batch 8, 640 px).
+# The full 150-epoch schedule needs roughly 3.5 hours per fold on that GPU.
+schedule:
+  short: {epochs: 30, patience: 10}
