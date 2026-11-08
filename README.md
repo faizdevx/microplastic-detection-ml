@@ -143,6 +143,8 @@ image decision varies between folds (`results/yolo_summary.md`).
 With the particles replaced by class-independent discs, YOLO still separates the classes well
 above chance, so much of its image decision comes from the background. Per-image intensity
 normalisation does not change the resolution-matched result (`results/phase7_yolo_controls.json`).
+On fold 1 the full schedule (150 epochs) reaches mask mAP50 0.777 and image balanced accuracy
+0.995, against 0.713 and 0.784 for the short schedule (`results/yolo_summary.md`).
 
 ### Concentration estimation (rig model)
 

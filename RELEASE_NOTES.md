@@ -17,6 +17,11 @@ accurate at image level (0.979 vs 0.933; exact McNemar p = 4.69e-08; accuracy di
 -0.046, 95 % interval [-0.066, -0.027] from a bootstrap over image groups;
 `results/phase7_comparison.json`). Table and named numbers are in `make paper-assets`.
 
+**Longer schedule on fold 1.** The full schedule (150 epochs, patience 30) on fold 1, the
+weakest fold, reaches mask mAP50 0.777 and image balanced accuracy 0.995, against 0.713 and
+0.784 for the short schedule, which stopped early after 21 epochs. The controls and the
+comparison above use the short-schedule models (`results/phase7_yolo_full_fold_1.json`).
+
 **Review set.** `mp review-export` writes 40 cross-validation images stratified by class and
 resolution for mask correction; `mp review-score` scores corrected masks against the automatic
 masks and the fold models. No corrected masks exist, so nothing is reported as human-checked.
