@@ -92,7 +92,7 @@ def build_disc_tree(k: int, rels: list[str]) -> Path:
     return root
 
 
-def train(ks: list[int] | None = None) -> None:
+def train(ks: list[int] | None = None, workers: int | None = None) -> None:
     """Retrain the fold models (their weights are needed for the disc control) and the normalised runs."""
     from mp.models import yolo
 
@@ -100,10 +100,10 @@ def train(ks: list[int] | None = None) -> None:
         build_norm_tree()
     for k in ks if ks is not None else range(N_FOLDS):
         if not _res(f"phase7_yolo_fold_{k}.json").exists():
-            yolo.train_and_eval(f"fold_{k}", schedule="short", tag=f"fold_{k}")
+            yolo.train_and_eval(f"fold_{k}", schedule="short", tag=f"fold_{k}", workers=workers)
         if not _res(f"phase7_yolo_norm_res_matched_{k}.json").exists():
             yolo.train_and_eval(f"res_matched_{k}", schedule="short", root=norm_root(),
-                                tag=f"norm_res_matched_{k}")
+                                tag=f"norm_res_matched_{k}", workers=workers)
 
 
 def _bal(preds: pd.DataFrame) -> dict:
@@ -228,7 +228,8 @@ def review_map(coco_path: str | Path) -> dict:
             data = yolo._write_yaml(root / "review.yaml", lst, lst, ycfg["classes"])
             m = model.val(data=str(data), imgsz=ycfg["imgsz"], device=yolo.pick_device(), plots=False,
                           workers=0, verbose=False)
-            out.setdefault(kind, []).append({"fold": k, "n_images": len(files), "mask_map50": float(m.seg.map50),
+            out.setdefault(kind, []).append({"fold": k, "n_images": len(files),
+                                             "mask_map50": float(m.seg.map50),
                                              "mask_map50_95": float(m.seg.map)})
     return out
 

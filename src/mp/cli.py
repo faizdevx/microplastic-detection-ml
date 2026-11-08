@@ -329,7 +329,7 @@ def _cmd_yolo_controls(args) -> int:
     from mp.eval import yolo_controls
 
     if args.train:
-        yolo_controls.train(args.folds)
+        yolo_controls.train(args.folds, args.workers)
     r = yolo_controls.write_controls()
     print(r["background_discs"]["balanced_accuracy"], r["normalised_resolution_matched"]["balanced_accuracy"])
     return 0
@@ -472,6 +472,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("yolo-controls", help="YOLO background-disc and normalised controls")
     p.add_argument("--train", action="store_true", help="retrain fold and normalised runs first (GPU, hours)")
     p.add_argument("--folds", type=int, nargs="*")
+    p.add_argument("--workers", type=int, help="dataloader workers (0 avoids shared memory)")
     p.set_defaults(func=_cmd_yolo_controls)
     sub.add_parser("compare", help="McNemar: YOLO vs per-particle classifier").set_defaults(func=_cmd_compare)
     p = sub.add_parser("review-export", help="40-image stratified review set for mask correction")

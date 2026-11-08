@@ -63,6 +63,14 @@ NUMBERS = {
     "YoloMaskMapFifty": ("results/yolo_summary.json", "folds.mask_map50.mean", "{:.3f}"),
     "YoloMaskMapFiftyStd": ("results/yolo_summary.json", "folds.mask_map50.std", "{:.3f}"),
     "YoloImageAccuracy": ("results/yolo_summary.json", "folds.image_accuracy.mean", "{:.3f}"),
+    "YoloDiscScore": ("results/phase7_yolo_controls.json",
+                      "background_discs.balanced_accuracy.mean", "{:.3f}"),
+    "YoloNormMatchedScore": ("results/phase7_yolo_controls.json",
+                             "normalised_resolution_matched.balanced_accuracy.mean", "{:.3f}"),
+    "McNemarP": ("results/phase7_comparison.json", "mcnemar.p_value", "{:.3g}"),
+    "AccDiffYoloMinusCls": ("results/phase7_comparison.json", "accuracy_difference.difference", "{:.3f}"),
+    "AccDiffLo": ("results/phase7_comparison.json", "accuracy_difference.ci95[0]", "{:.3f}"),
+    "AccDiffHi": ("results/phase7_comparison.json", "accuracy_difference.ci95[1]", "{:.3f}"),
 }
 
 
@@ -223,6 +231,31 @@ def table_yolo() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def table_yolo_controls() -> pd.DataFrame:
+    c, m = J("results/phase7_yolo_controls.json"), J("results/phase7_comparison.json")
+    d, n = c["background_discs"], c["normalised_resolution_matched"]
+
+    def ms(x):
+        return f"{x['mean']:.3f} +- {x['std']:.3f}"
+
+    diff = m["accuracy_difference"]
+    rows = [{"Control": "background discs (balanced accuracy)", "YOLOv11-seg": ms(d["balanced_accuracy"]),
+             "Per-particle classifier": f3(d["classifier_balanced_accuracy"])},
+            {"Control": "resolution-matched, normalised (balanced accuracy)",
+             "YOLOv11-seg": ms(n["balanced_accuracy"]),
+             "Per-particle classifier": f3(n["classifier_balanced_accuracy"])},
+            {"Control": "resolution-matched, not normalised (balanced accuracy)",
+             "YOLOv11-seg": ms(n["unnormalised_balanced_accuracy"]), "Per-particle classifier": ""},
+            {"Control": f"paired CV accuracy (n = {m['n_paired_images']})",
+             "YOLOv11-seg": f3(m["yolo_accuracy"]), "Per-particle classifier": f3(m["classifier_accuracy"])},
+            {"Control": "McNemar exact p", "YOLOv11-seg": f"{m['mcnemar']['p_value']:.3g}",
+             "Per-particle classifier": ""},
+            {"Control": "accuracy difference, group bootstrap 95% CI",
+             "YOLOv11-seg": f"{diff['difference']:.3f} ({diff['ci95'][0]:.3f} to {diff['ci95'][1]:.3f})",
+             "Per-particle classifier": ""}]
+    return pd.DataFrame(rows)
+
+
 TABLES = {
     "dataset_audit": (table_dataset, "Image archive: files and near-duplicate groups per class."),
     "classifier": (table_classifier,
@@ -233,6 +266,8 @@ TABLES = {
     "regression": (table_regression, "Concentration regression on the rig-model table."),
     "detection_limits": (table_detection, "Detection limits at the default rig values."),
     "yolo": (table_yolo, "YOLOv11-seg on automatic masks, short schedule (30 epochs, patience 10)."),
+    "yolo_controls": (table_yolo_controls,
+                      "YOLOv11-seg controls and paired comparison with the per-particle classifier."),
     "benchmark": (table_benchmark, "Segmentation and classification speed on this machine."),
 }
 

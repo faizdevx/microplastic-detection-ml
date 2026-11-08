@@ -166,7 +166,7 @@ def label_provenance() -> dict:
 def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None,
                    cfg: dict | None = None, patience: int | None = None,
                    batch: int | None = None, schedule: str | None = None,
-                   root: Path | None = None, tag: str | None = None) -> dict:
+                   root: Path | None = None, tag: str | None = None, workers: int | None = None) -> dict:
     """Train on data_key's train list, evaluate on its val list, save results JSON.
 
     root: image tree to train on (default data/yolo). tag: run name and results/phase7_yolo_<tag>.json
@@ -192,6 +192,8 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         args["patience"] = patience
     if batch:
         args["batch"] = batch
+    if workers is not None:
+        args["workers"] = workers
     weights = ycfg["smoke"]["model"] if smoke else ycfg["model"]
     model = YOLO(weights)
     model.train(**args)
@@ -223,6 +225,7 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         "epochs_run": epochs_run,
         "patience": args["patience"],
         "batch": args["batch"],
+        "workers": args["workers"],
         "schedule": schedule or "config",
         "weights_evaluated": "final epoch (last.pt)",
         "labels": label_provenance(),
