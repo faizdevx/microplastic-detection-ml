@@ -22,6 +22,29 @@ The export holds one representative image per near-duplicate group, 150 groups p
 the COCO `images[].split` field. Corrected hold-out images may be used to measure
 auto-label quality and counting error, never to train.
 
+## Review set (40 images)
+
+A smaller set for a first check of the automatic masks and of YOLOv11-seg against human masks:
+
+```bash
+python -m mp.cli review-export          # data/annotations/review/{images,coco_auto.json}
+# correct the masks, export COCO 1.0 as review_corrected.json
+python -m mp.cli review-score review_corrected.json
+```
+
+`review-export` takes 40 cross-validation images (no hold-out image), one per near-duplicate
+group, stratified by class and original resolution: each class-resolution stratum gets its
+share of the 40 and at least one image (seed 42). `review-score` writes
+`results/annotation_quality.json` (IoU, count error, missed and spurious particles) and
+`results/review_quality.json`, which adds the mask mAP of each fold's YOLOv11-seg model on its
+own validation images from the set, once against the corrected masks and once against the
+automatic masks of the same images. It needs the fold models from
+`python -m mp.cli yolo-controls --train`. It does not change the training labels.
+
+No corrected review file exists yet, so no human-checked mask number is reported anywhere.
+The scoring code is tested on synthetic edits of automatic masks (`tests/test_annotate_qa.py`,
+`tests/test_phase7.py`).
+
 ## What counts as a particle
 
 - One bright, compact fluorescent object = one polygon, regardless of brightness.
