@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-11-08T09:44:17+00:00",
+    "git_commit": "dca3e4206d1397b360838753e7610467e9ed2b98",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "0",
+    "torch": "2.11.0+cu128"
+  },
+  "data": "res_matched_1",
+  "weights": "yolo11s-seg.pt",
+  "epochs": 30,
+  "epochs_run": 30,
+  "patience": 10,
+  "batch": 6,
+  "workers": 0,
+  "schedule": "short",
+  "weights_evaluated": "final epoch (last.pt)",
+  "labels": {
+    "corrected": 0,
+    "auto": 1020,
+    "description": "trained on auto-generated masks (uncorrected)"
+  },
+  "seg": {
+    "map50": 0.7136646086817939,
+    "map50_95": 0.29359197494799816
+  },
+  "box": {
+    "map50": 0.838352389521286,
+    "map50_95": 0.4832642117810998
+  },
+  "per_class_seg": {
+    "pvc": {
+      "precision": 0.6880669187014987,
+      "recall": 0.6999641962047977
+    },
+    "nylon": {
+      "precision": 0.7369680999485917,
+      "recall": 0.6932185145317545
+    }
+  },
+  "image_level": {
+    "n": 107,
+    "accuracy": 1.0,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "per_class": {
+      "PVC": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "NYLON": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        80,
+        0
+      ],
+      [
+        0,
+        27
+      ]
+    ],
+    "ece": 0.0007275295069563345,
+    "roc_auc": 1.0
+  },
+  "n_val_images": 107,
+  "n_val_no_prediction": 0,
+  "counting_error": null,
+  "counting_error_note": "needs human-corrected masks; none imported",
+  "tag": "norm_res_matched_1",
+  "weights_path": "D:\\projects\\microplastic-detection-ml\\data\\yolo\\runs\\norm_res_matched_1\\weights\\last.pt"
+}
