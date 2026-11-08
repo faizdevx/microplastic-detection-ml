@@ -5,3 +5,9 @@ data/models
 __pycache__
 .pytest_cache
 *.egg-info
+data/annotations
+data/phase5
+data/yolo_discs
+data/yolo_norm
+runs
+release_bundle
