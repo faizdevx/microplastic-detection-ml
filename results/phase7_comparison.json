@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-11-08T12:57:59+00:00",
+    "git_commit": "f7c1055bc54dd6d54b29153e09343d6c393ed713",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "cpu",
+    "torch": "2.11.0+cu128"
+  },
+  "first": "YOLOv11-seg (retrained fold models)",
+  "second": "per-particle classifier (baseline)",
+  "n_paired_images": 865,
+  "n_dropped_no_prediction": 0,
+  "yolo_accuracy": 0.9329479768786128,
+  "classifier_accuracy": 0.9791907514450867,
+  "classifier_cv_accuracy_stored": 0.9791907514450867,
+  "mcnemar": {
+    "only_first_correct": 8,
+    "only_second_correct": 48,
+    "p_value": 4.688184102041859e-08
+  },
+  "accuracy_difference": {
+    "difference": -0.046242774566473986,
+    "ci95": [
+      -0.06635805793655068,
+      -0.02699530516431925
+    ],
+    "n_bootstrap": 2000,
+    "n_groups": 510
+  }
+}
