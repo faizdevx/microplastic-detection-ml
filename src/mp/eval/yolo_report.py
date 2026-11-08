@@ -68,6 +68,43 @@ def _f(x: dict) -> str:
     return f"{x['mean']:.3f} ± {x['std']:.3f}"
 
 
+def _phase7_lines() -> list[str]:
+    cp, mp_ = RES / "phase7_yolo_controls.json", RES / "phase7_comparison.json"
+    if not cp.exists():
+        return []
+    c = json.loads(cp.read_text(encoding="utf8"))
+    r, d, n = c["retrained_folds"], c["background_discs"], c["normalised_resolution_matched"]
+    L = ["### Controls (retrained fold models)", "",
+         f"The phase 2 fold weights were not kept, so the five fold models were retrained with the same "
+         f"schedule: mask mAP50 {_f(r['mask_map50'])} (stored {_f(r['stored_mask_map50'])}), image "
+         f"balanced accuracy {_f(r['image_balanced_accuracy'])} (stored "
+         f"{_f(r['stored_image_balanced_accuracy'])}).", "",
+         "| Control (image balanced accuracy) | YOLO | Per-particle classifier |", "|---|---|---|",
+         f"| Particles replaced by class-independent discs | {_f(d['balanced_accuracy'])} | "
+         f"{d['classifier_balanced_accuracy']:.3f} |",
+         f"| Resolution-matched folds, per-image normalisation | {_f(n['balanced_accuracy'])} | "
+         f"{n['classifier_balanced_accuracy']:.3f} |",
+         f"| Resolution-matched folds, no normalisation | {_f(n['unnormalised_balanced_accuracy'])} | "
+         f"{n['classifier_balanced_accuracy']:.3f} |", "",
+         "With every particle replaced by a disc of one colour, YOLO still separates the classes well above "
+         "chance (0.5). The per-particle classifier's value is its own background control from phase 5 "
+         "(pseudo-particles taken from background pixels), which lands at a similar level. Much of the "
+         "image-level decision therefore comes from the background and acquisition context, not from "
+         "particle appearance. Per-image normalisation does not change the resolution-matched result "
+         f"(mask mAP50 {_f(n['mask_map50'])} with normalisation).", ""]
+    if mp_.exists():
+        m = json.loads(mp_.read_text(encoding="utf8"))
+        a, mc = m["accuracy_difference"], m["mcnemar"]
+        L += ["### YOLO against the per-particle classifier (same folds, image level)", "",
+              f"{m['n_paired_images']} paired images: YOLO accuracy {m['yolo_accuracy']:.3f}, classifier "
+              f"accuracy {m['classifier_accuracy']:.3f}. Only YOLO correct: {mc['only_first_correct']}; only "
+              f"the classifier correct: {mc['only_second_correct']}; exact McNemar p = {mc['p_value']:.3g}. "
+              f"Accuracy difference (YOLO minus classifier) {a['difference']:.3f}, 95 % interval "
+              f"[{a['ci95'][0]:.3f}, {a['ci95'][1]:.3f}] from {a['n_bootstrap']} bootstrap resamples of "
+              f"{a['n_groups']} image groups.", ""]
+    return L
+
+
 def write() -> str:
     s = build()
     (RES / "yolo_summary.json").write_text(json.dumps(s, indent=2), encoding="utf8")
@@ -110,6 +147,7 @@ def write() -> str:
         L += ["### Model on all cross-validation images", "",
               f"{a['epochs_run']} epochs; mask mAP50 {a['mask_map50']:.3f}, mask mAP50-95 "
               f"{a['mask_map50_95']:.3f}, measured on its own training images ({a['note']}).", ""]
+    L += _phase7_lines()
     text = "\n".join(L) + "\n"
     (RES / "yolo_summary.md").write_text(text, encoding="utf8")
     return text
