@@ -44,6 +44,13 @@ The phase 2 fold weights were not kept, so the five fold models were retrained w
 
 With every particle replaced by a disc of one colour, YOLO still separates the classes well above chance (0.5). The per-particle classifier's value is its own background control from phase 5 (pseudo-particles taken from background pixels), which lands at a similar level. Much of the image-level decision therefore comes from the background and acquisition context, not from particle appearance. Per-image normalisation does not change the resolution-matched result (mask mAP50 0.700 ± 0.019 with normalisation).
 
+### Longer schedule on fold 1
+
+| Schedule | Epochs run | Mask mAP50 | Mask mAP50-95 | Image balanced accuracy |
+|---|---|---|---|---|
+| short (budget 30, patience 10) | 21 | 0.713 | 0.289 | 0.784 |
+| full (budget 150, patience 30) | 150 | 0.777 | 0.340 | 0.995 |
+
 ### YOLO against the per-particle classifier (same folds, image level)
 
 865 paired images: YOLO accuracy 0.933, classifier accuracy 0.979. Only YOLO correct: 8; only the classifier correct: 48; exact McNemar p = 4.69e-08. Accuracy difference (YOLO minus classifier) -0.046, 95 % interval [-0.066, -0.027] from 2000 bootstrap resamples of 510 image groups.

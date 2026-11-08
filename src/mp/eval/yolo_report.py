@@ -92,6 +92,18 @@ def _phase7_lines() -> list[str]:
          "image-level decision therefore comes from the background and acquisition context, not from "
          "particle appearance. Per-image normalisation does not change the resolution-matched result "
          f"(mask mAP50 {_f(n['mask_map50'])} with normalisation).", ""]
+    fp = RES / "phase7_yolo_full_fold_1.json"
+    if fp.exists():
+        full = json.loads(fp.read_text(encoding="utf8"))
+        short = json.loads((RES / "phase7_yolo_fold_1.json").read_text(encoding="utf8"))
+        L += ["### Longer schedule on fold 1", "",
+              "| Schedule | Epochs run | Mask mAP50 | Mask mAP50-95 | Image balanced accuracy |",
+              "|---|---|---|---|---|"]
+        for lab, r in ((f"short (budget {short['epochs']}, patience {short['patience']})", short),
+                       (f"full (budget {full['epochs']}, patience {full['patience']})", full)):
+            L.append(f"| {lab} | {r['epochs_run']} | {r['seg']['map50']:.3f} | {r['seg']['map50_95']:.3f} | "
+                     f"{r['image_level']['balanced_accuracy']:.3f} |")
+        L.append("")
     if mp_.exists():
         m = json.loads(mp_.read_text(encoding="utf8"))
         a, mc = m["accuracy_difference"], m["mcnemar"]
