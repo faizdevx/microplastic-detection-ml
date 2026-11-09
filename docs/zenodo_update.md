@@ -15,6 +15,8 @@ Nothing has been uploaded. Steps for a new version of record 10.5281/zenodo.2107
 | `data/processed/scattering_v1.csv` | S1-S4 table produced by `make sim` |
 | `data/processed/scattering_v1.config.yaml` | exact configuration of that table |
 | `results/data_audit.json` | dataset audit |
+| `results/phase7_yolo_controls.json` | YOLOv11 background-disc and normalised resolution-matched controls |
+| `results/phase7_comparison.json` | McNemar comparison of YOLOv11 and the per-particle classifier |
 | `DATASET_CARD.md`, `MODEL_CARD.md` | documentation |
 
    `final_dataset.csv` (already on the record) has no documented origin. Either remove it from

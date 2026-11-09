@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "timestamp_utc": "2026-11-08T10:07:12+00:00",
+    "git_commit": "dca3e4206d1397b360838753e7610467e9ed2b98",
+    "python": "3.14.6",
+    "numpy": "2.5.2",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.0",
+    "device": "0",
+    "torch": "2.11.0+cu128"
+  },
+  "data": "fold_2",
+  "weights": "yolo11s-seg.pt",
+  "epochs": 30,
+  "epochs_run": 23,
+  "patience": 10,
+  "batch": 6,
+  "workers": 0,
+  "schedule": "short",
+  "weights_evaluated": "final epoch (last.pt)",
+  "labels": {
+    "corrected": 0,
+    "auto": 1020,
+    "description": "trained on auto-generated masks (uncorrected)"
+  },
+  "seg": {
+    "map50": 0.7294931017993742,
+    "map50_95": 0.3083962789540107
+  },
+  "box": {
+    "map50": 0.8364715851985665,
+    "map50_95": 0.4728289804535021
+  },
+  "per_class_seg": {
+    "pvc": {
+      "precision": 0.7494186306974588,
+      "recall": 0.6635451008482971
+    },
+    "nylon": {
+      "precision": 0.7685126828644158,
+      "recall": 0.6712412428128561
+    }
+  },
+  "image_level": {
+    "n": 173,
+    "accuracy": 0.9942196531791907,
+    "balanced_accuracy": 0.9945652173913043,
+    "macro_f1": 0.9942002749002649,
+    "per_class": {
+      "PVC": {
+        "precision": 0.9878048780487805,
+        "recall": 1.0,
+        "f1": 0.9938650306748467
+      },
+      "NYLON": {
+        "precision": 1.0,
+        "recall": 0.9891304347826086,
+        "f1": 0.994535519125683
+      }
+    },
+    "confusion_matrix": [
+      [
+        81,
+        0
+      ],
+      [
+        1,
+        91
+      ]
+    ],
+    "ece": 0.01579143606513916,
+    "roc_auc": 0.9997316156736447
+  },
+  "n_val_images": 173,
+  "n_val_no_prediction": 0,
+  "counting_error": null,
+  "counting_error_note": "needs human-corrected masks; none imported",
+  "tag": "fold_2",
+  "weights_path": "D:\\projects\\microplastic-detection-ml\\data\\yolo\\runs\\fold_2\\weights\\last.pt"
+}

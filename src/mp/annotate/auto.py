@@ -124,7 +124,31 @@ def export_correction_set(n_per_class: int = 150, seed: int = 42, cfg: dict | No
         .apply(lambda d: d.sample(min(n_per_class, len(d)), random_state=seed))
         .sort_values("rel_path")
     )
-    out_dir = ann_root() / "to_correct"
+    return _write_coco(pick, ann_root() / "to_correct")
+
+
+def review_pick(images: pd.DataFrame, n: int = 40, seed: int = 42) -> pd.DataFrame:
+    """n CV images, one per group, stratified by class x resolution: proportional allocation with at
+    least one image per stratum."""
+    reps = images[images["fold"] != HOLDOUT].drop_duplicates("group_id")
+    strata = reps["class"] + "_" + reps["width"].astype(str) + "x" + reps["height"].astype(str)
+    sizes = strata.value_counts().sort_index()
+    alloc = np.maximum(1, np.floor(sizes / sizes.sum() * n)).astype(int)
+    for s in (sizes / sizes.sum() * n - alloc).sort_values(ascending=False).index:
+        if alloc.sum() >= n:
+            break
+        alloc[s] += 1
+    alloc = alloc.clip(upper=sizes)
+    return pd.concat([reps[strata == s].sample(int(alloc[s]), random_state=seed) for s in alloc.index]
+                     ).sort_values("rel_path")
+
+
+def export_review_set(n: int = 40, seed: int = 42, cfg: dict | None = None) -> Path:
+    """Review set for human correction of the automatic masks (CV images only)."""
+    return _write_coco(review_pick(load_pool(cfg or load_config()).images, n, seed), ann_root() / "review")
+
+
+def _write_coco(pick: pd.DataFrame, out_dir: Path) -> Path:
     (out_dir / "images").mkdir(parents=True, exist_ok=True)
     images, anns = [], []
     ann_id = 1

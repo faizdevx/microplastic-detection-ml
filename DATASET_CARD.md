@@ -75,6 +75,9 @@ Leave-one-session-out folds are therefore not emitted (needs ≥ 3 sessions per 
   Auto-vs-corrected mask IoU is therefore not available. Run `mp annotate-export`, correct,
   then `mp annotate-import` (see `docs/annotation_guide.md`), which writes
   `results/annotation_quality.json`.
+- Review set: `mp review-export` writes 40 cross-validation images (one per group, stratified
+  by class and resolution, seed 42) to `data/annotations/review/` for correction. None has been
+  corrected yet.
 - Background-only control: the particle-free background of an image predicts the class with
   0.906 balanced accuracy (`results/phase2_controls.json`).
 

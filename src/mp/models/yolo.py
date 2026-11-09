@@ -16,28 +16,30 @@ from mp.eval.metrics import point_metrics, run_meta
 HIDDEN_RES = ("640x480", "1280x960")
 
 
-def _img_path(rel: str) -> Path:
+def _img_path(rel: str, root: Path | None = None) -> Path:
     cls_dir, stem = stem_of(rel)
-    return yolo_root() / "images" / cls_dir / f"{stem}.jpg"
+    return (root or yolo_root()) / "images" / cls_dir / f"{stem}.jpg"
 
 
 def _write_list(path: Path, rels: list[str]) -> str:
+    root = path.parent.parent
     path.parent.mkdir(parents=True, exist_ok=True)
-    existing = [_img_path(r) for r in rels if _img_path(r).exists()]
+    existing = [_img_path(r, root) for r in rels if _img_path(r, root).exists()]
     path.write_text("\n".join(p.resolve().as_posix() for p in existing) + "\n", encoding="utf8")
     return path.resolve().as_posix()
 
 
 def _write_yaml(path: Path, train: str, val: str, names: list[str]) -> Path:
     path.write_text(
-        yaml.safe_dump({"path": yolo_root().resolve().as_posix(), "train": train,
+        yaml.safe_dump({"path": path.parent.resolve().as_posix(), "train": train,
                         "val": val, "names": dict(enumerate(names))}, sort_keys=False),
         encoding="utf8",
     )
     return path
 
 
-def build_datasets(pool: Pool | None = None, ycfg: dict | None = None) -> dict[str, Path]:
+def build_datasets(pool: Pool | None = None, ycfg: dict | None = None,
+                   root: Path | None = None) -> dict[str, Path]:
     """Dataset YAMLs from splits.json. Ultralytics never sees a split it chose itself.
 
     fold_k          train = CV images outside fold k,   val = fold k
@@ -50,7 +52,7 @@ def build_datasets(pool: Pool | None = None, ycfg: dict | None = None) -> dict[s
     pool = pool or load_pool()
     ycfg = ycfg or load_named("yolo_seg")
     names = ycfg["classes"]
-    root = yolo_root()
+    root = root or yolo_root()
     lists = root / "lists"
     out: dict[str, Path] = {}
     cv = pool.cv()
@@ -124,11 +126,12 @@ def train_args(ycfg: dict, data: Path, name: str, smoke: bool) -> dict:
     return args
 
 
-def image_class_scores(model, rels: list[str], imgsz: int, device: str) -> pd.DataFrame:
+def image_class_scores(model, rels: list[str], imgsz: int, device: str,
+                       root: Path | None = None) -> pd.DataFrame:
     """P(NYLON) per image = confidence mass of nylon masks / all masks."""
     rows = []
     for rel in rels:
-        p = _img_path(rel)
+        p = _img_path(rel, root)
         r = model.predict(str(p), imgsz=imgsz, device=device, verbose=False, conf=0.25)[0]
         if r.boxes is None or len(r.boxes) == 0:
             rows.append({"rel_path": rel, "prob": np.nan, "n_pred": 0})
@@ -162,8 +165,13 @@ def label_provenance() -> dict:
 
 def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None,
                    cfg: dict | None = None, patience: int | None = None,
-                   batch: int | None = None, schedule: str | None = None) -> dict:
-    """Train on data_key's train list, evaluate on its val list, save results JSON."""
+                   batch: int | None = None, schedule: str | None = None,
+                   root: Path | None = None, tag: str | None = None, workers: int | None = None) -> dict:
+    """Train on data_key's train list, evaluate on its val list, save results JSON.
+
+    root: image tree to train on (default data/yolo). tag: run name and results/phase7_yolo_<tag>.json
+    instead of results/phase2_yolo_<data_key>.json, so control runs never overwrite the stored ones.
+    """
     from ultralytics import YOLO
 
     cfg = cfg or load_config()
@@ -173,8 +181,8 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         data = build_smoke(pool, ycfg)
         name = "smoke"
     else:
-        data = build_datasets(pool, ycfg)[data_key]
-        name = data_key
+        data = build_datasets(pool, ycfg, root)[data_key]
+        name = tag or data_key
     args = train_args(ycfg, data, name, smoke)
     if schedule:
         args.update(ycfg["schedule"][schedule])
@@ -184,6 +192,8 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         args["patience"] = patience
     if batch:
         args["batch"] = batch
+    if workers is not None:
+        args["workers"] = workers
     weights = ycfg["smoke"]["model"] if smoke else ycfg["model"]
     model = YOLO(weights)
     model.train(**args)
@@ -203,7 +213,7 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
     full = pool.images.assign(key=lambda d: d["rel_path"].map(lambda r: f"{stem_of(r)[0]}/{stem_of(r)[1]}"))
     lookup = dict(zip(full["key"], full["rel_path"]))
     val_rels = [lookup[r] for r in rels if r in lookup]
-    sc = image_class_scores(ev_model, val_rels, args["imgsz"], args["device"])
+    sc = image_class_scores(ev_model, val_rels, args["imgsz"], args["device"], root)
     meta_df = pool.images[["rel_path", "y", "group_id"]]
     sc = sc.merge(meta_df, on="rel_path")
     ok = sc.dropna(subset=["prob"])
@@ -215,6 +225,7 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         "epochs_run": epochs_run,
         "patience": args["patience"],
         "batch": args["batch"],
+        "workers": args["workers"],
         "schedule": schedule or "config",
         "weights_evaluated": "final epoch (last.pt)",
         "labels": label_provenance(),
@@ -230,9 +241,13 @@ def train_and_eval(data_key: str, smoke: bool = False, epochs: int | None = None
         "counting_error_note": "needs human-corrected masks; none imported"
         if label_provenance()["corrected"] == 0 else "see annotation_quality.json",
     }
-    out = resolve(cfg["paths"]["results"]) / f"phase2_yolo_{res['data']}.json"
+    if tag:
+        res["tag"] = tag
+        res["weights_path"] = str(last) if last else None
+    key = tag or res["data"]
+    out = resolve(cfg["paths"]["results"]) / (f"phase7_yolo_{tag}.json" if tag else f"phase2_yolo_{key}.json")
     out.write_text(json.dumps(res, indent=2), encoding="utf8")
-    sc.to_csv(yolo_root() / f"preds_{res['data']}.csv", index=False)
+    sc.to_csv(yolo_root() / f"preds_{key}.csv", index=False)
     return res
 
 

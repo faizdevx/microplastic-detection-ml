@@ -154,8 +154,9 @@ claims:
   p46:
     status: consistent
     evidence:
-      - {ref: "results/phase5_yolo_status.json::trained", label: "YOLOv11-seg trained (false = no mAP exists)"}
-    note: "The evaluated classifier is feature-based, so mAP does not apply to it. The segmentation pipeline exists but is untrained, so no mAP is reported."
+      - {ref: "results/phase5_yolo_status.json::trained", label: "YOLOv11-seg trained"}
+      - {ref: "results/yolo_summary.json::folds.mask_map50.mean", label: "YOLOv11-seg mask mAP50 against automatic masks, five folds"}
+    note: "The evaluated classifier is feature-based, so mAP does not apply to it. YOLOv11-seg is trained on automatic masks only, so its mAP measures agreement with the classical segmentation, not with human-drawn outlines."
   p48:
     status: contradicted
     evidence:

@@ -1,6 +1,9 @@
 import importlib.util
+import shutil
 import subprocess
 import sys
+
+import pytest
 
 from mp.config import repo_root
 
@@ -22,6 +25,8 @@ def test_number_matching_precision_rules():
     assert not audit.number_matches(0.55, 2, uni)
 
 
+@pytest.mark.skipif(shutil.which("git") is None or not (repo_root() / ".git").exists(),
+                    reason="the audit reads git history (absent in the Docker image)")
 def test_audit_passes_on_this_repository():
     out = subprocess.run([sys.executable, str(repo_root() / "tools" / "claims_audit.py")],
                          capture_output=True, text=True, encoding="utf8", errors="replace")

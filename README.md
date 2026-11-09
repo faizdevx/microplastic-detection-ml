@@ -138,6 +138,14 @@ drop, so part of the accuracy comes from acquisition cues (`results/phase5_summa
 Mask mAP50 is agreement with the automatic masks, not with human-drawn outlines, and the
 image decision varies between folds (`results/yolo_summary.md`).
 
+![YOLO controls](results/figures/yolo_controls.png)
+
+With the particles replaced by class-independent discs, YOLO still separates the classes well
+above chance, so much of its image decision comes from the background. Per-image intensity
+normalisation does not change the resolution-matched result (`results/phase7_yolo_controls.json`).
+On fold 1 the full schedule (150 epochs) reaches mask mAP50 0.777 and image balanced accuracy
+0.995, against 0.713 and 0.784 for the short schedule (`results/yolo_summary.md`).
+
 ### Concentration estimation (rig model)
 
 | Angular scattering | Signal vs concentration |
@@ -441,7 +449,7 @@ Confusion matrix (rows true PVC/NYLON): [[74, 0], [2, 79]]; ECE 0.125; 155 image
   640×480 and tested on 1280×960 (0.864
   vs 0.506
   balanced accuracy), so part of the signal is genuinely in the particles.
-- YOLOv11-seg: mask mAP50 0.739 ± 0.019 against automatic masks; its image-level cross-resolution balanced accuracy (0.970 and 0.875) is higher than the per-particle classifier's (0.864 and 0.762), but the network sees the background and no background control was run for it.
+- YOLOv11-seg: mask mAP50 0.739 ± 0.019 against automatic masks; its image-level cross-resolution balanced accuracy (0.970 and 0.875) is higher than the per-particle classifier's (0.864 and 0.762), but the network sees the background: with every particle replaced by a disc of one colour its image balanced accuracy is still 0.797 ± 0.128. On the same five folds the per-particle classifier is more accurate at image level (0.979 vs 0.933, exact McNemar p = 4.69e-08; `results/phase7_comparison.json`).
 
 **Figures** (generated):
 
@@ -507,6 +515,7 @@ tia_Mohm, detector_distance_mm, laser_power_mW (`results/sensing/analysis.json`)
 - The 2040 image files are 600 near-duplicate groups, so the effective sample size is much smaller
   than the file count.
 - The YOLOv11 masks used for training and scoring are automatic and uncorrected, and the training budget was short.
+  Its image decision draws largely on the background (background-disc control).
 - The concentration numbers describe a model of the rig with unmeasured parameters, not an instrument.
   Particle-number noise limits accuracy at 0.1-10 mg/L, and the model assumes spherical, non-absorbing,
   single-polymer particles.

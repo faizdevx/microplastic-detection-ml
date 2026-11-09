@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this repository or dataset, please cite the paper and the dataset record."
 title: "microplastic-detection-ml"
-version: 0.2.0
+version: 0.3.0
 license: Apache-2.0
 repository-code: "https://github.com/faizdevx/microplastic-detection-ml"
 authors:

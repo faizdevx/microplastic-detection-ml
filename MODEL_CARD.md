@@ -99,7 +99,30 @@ Mask mAP50 0.724 ± 0.007; image accuracy 0.991 ± 0.008; image balanced accurac
 
 30 epochs; mask mAP50 0.764, mask mAP50-95 0.338, measured on its own training images (validated on its own training images; a fit check, not a generalisation result).
 
-The model sees the whole image, background included, and no background-disc control was run for it, so its cross-resolution result can include background cues. Labels are the classical segmentation's output, so mAP measures agreement with it.
+### Controls (retrained fold models)
+
+The phase 2 fold weights were not kept, so the five fold models were retrained with the same schedule: mask mAP50 0.737 ± 0.015 (stored 0.739 ± 0.019), image balanced accuracy 0.937 ± 0.077 (stored 0.894 ± 0.112).
+
+| Control (image balanced accuracy) | YOLO | Per-particle classifier |
+|---|---|---|
+| Particles replaced by class-independent discs | 0.797 ± 0.128 | 0.811 |
+| Resolution-matched folds, per-image normalisation | 0.980 ± 0.019 | 0.966 |
+| Resolution-matched folds, no normalisation | 0.981 ± 0.017 | 0.966 |
+
+With every particle replaced by a disc of one colour, YOLO still separates the classes well above chance (0.5). The per-particle classifier's value is its own background control from phase 5 (pseudo-particles taken from background pixels), which lands at a similar level. Much of the image-level decision therefore comes from the background and acquisition context, not from particle appearance. Per-image normalisation does not change the resolution-matched result (mask mAP50 0.700 ± 0.019 with normalisation).
+
+### Longer schedule on fold 1
+
+| Schedule | Epochs run | Mask mAP50 | Mask mAP50-95 | Image balanced accuracy |
+|---|---|---|---|---|
+| short (budget 30, patience 10) | 21 | 0.713 | 0.289 | 0.784 |
+| full (budget 150, patience 30) | 150 | 0.777 | 0.340 | 0.995 |
+
+### YOLO against the per-particle classifier (same folds, image level)
+
+865 paired images: YOLO accuracy 0.933, classifier accuracy 0.979. Only YOLO correct: 8; only the classifier correct: 48; exact McNemar p = 4.69e-08. Accuracy difference (YOLO minus classifier) -0.046, 95 % interval [-0.066, -0.027] from 2000 bootstrap resamples of 510 image groups.
+
+The model sees the whole image, background included. The background-disc control shows that its image decision, and its cross-resolution result, draw largely on background cues. Labels are the classical segmentation's output, so mAP measures agreement with it. The controls and the McNemar comparison use the short-schedule models; the full schedule was run on fold 1 only.
 
 ## Failure modes
 - Touching or overlapping particles are split or merged by the watershed.
@@ -108,7 +131,8 @@ The model sees the whole image, background included, and no background-disc cont
 - Probabilities are not well calibrated (ECE 0.125).
 
 ## Not evaluated
-- **YOLOv11-seg against human-drawn masks, counting error, McNemar comparison with the per-particle classifier:** not available; no corrected masks exist and the YOLO hold-out predictions were not produced.
+- **YOLOv11-seg against human-drawn masks, counting error:** not available; no corrected masks exist (the 40-image review set and its scoring code are in place, `docs/annotation_guide.md`).
+- **YOLOv11-seg on the hold-out:** not run.
 - **Human-corrected masks:** none imported; masks are auto-generated.
 - **Pixel calibration:** none.
 
